@@ -4,7 +4,7 @@ export default function page() {
     return (
         <div>
             <CustomNavbar />
-            some random text for example
+            some random text for example updated
         </div>
     )
 };
