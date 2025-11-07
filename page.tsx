@@ -1,10 +1,9 @@
-import CustomNavbar from "./CustomNavbar";
-
 export default function page() {
-    return (
-        <div>
-            <CustomNavbar />
-            some random text for example updated
-        </div>
-    )
-};
+  // redirect to login if not logged in
+  // show this page if no class else go to class page
+  return (
+    <div>
+      some random text for example updated
+    </div>
+  );
+}
