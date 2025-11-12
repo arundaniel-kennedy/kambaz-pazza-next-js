@@ -1,4 +1,6 @@
+import { Provider } from "react-redux";
 import Navigation from "./Navigation";
+import store from "./store";
 
 export default function PazzaLayout({
   children,
@@ -6,10 +8,9 @@ export default function PazzaLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div> 
-      {/* provider here */}
+    <Provider store={store}>
       <Navigation />
       {children}
-    </div>
+    </Provider>
   );
 }
