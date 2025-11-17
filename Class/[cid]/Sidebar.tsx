@@ -1,7 +1,7 @@
-import React from 'react'
+// import React from 'react'
 
-export default function Sidebar() {
-  return (
-    <div>sidebar chanegd by arth</div>
-  )
-}
+// export default function Sidebar() {
+//   return (
+//     <div>sidebar chanegd by arth</div>
+//   )
+// }

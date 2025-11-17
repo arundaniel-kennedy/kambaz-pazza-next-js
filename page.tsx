@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 
-export default function page() {
-  return (
-    redirect("/Pazza/Class/RS101")
-  );
-}
+// export default function page() {
+//   return (
+//     redirect("/Pazza/Class/RS101")
+//   );
+// }

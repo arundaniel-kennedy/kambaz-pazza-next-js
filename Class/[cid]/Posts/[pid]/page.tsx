@@ -1,9 +1,9 @@
-import React from 'react'
+// import React from 'react'
 
-export default function page() {
-  return (
-    <div>
-      actual content
-    </div>
-  )
-}
+// export default function page() {
+//   return (
+//     <div>
+//       actual content
+//     </div>
+//   )
+// }
