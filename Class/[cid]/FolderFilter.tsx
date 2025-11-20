@@ -1,7 +1,7 @@
-// import React from 'react'
+import React from 'react'
 
-// export default function FolderFilter() {
-//   return (
-//     <div>folderFilter</div>
-//   )
-// }
+export default function FolderFilter() {
+  return (
+    <div>folderFilter</div>
+  )
+}
