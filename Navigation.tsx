@@ -1,22 +1,27 @@
 "use client";
 
-import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Nav, Navbar } from "react-bootstrap";
 
 import PazzaLogo from "./PazzaLogo"
 
+import "./Navigation.scss"
+import { useParams } from "next/navigation";
+import Link from "next/link";
+
 export default function Navigation() {
+  const { cid } = useParams();
   return (
-    <Navbar expand="lg" className="bg-body-tertiary px-4">
-        <Navbar.Brand href="#home"><PazzaLogo /></Navbar.Brand>
-        <div>CS5100</div>
+    <Navbar expand="lg" className="px-4 main-nav">
+        <Navbar.Brand href="#home"><PazzaLogo width={"90px"} className="mt-2"/></Navbar.Brand>
+        <div>Web Dev - CS5100</div>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav mx-auto">
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Q&A</Nav.Link>
-            <Nav.Link href="#link">Manage Class</Nav.Link>
+          <Nav className="mx-auto gap-4">
+            <Nav.Link as={Link} href={`/Pazza/Class/${cid}`}>Q&A</Nav.Link>
+            <Nav.Link as={Link} href={`/Pazza/ConfigureClasses/${cid}`}>Manage Class</Nav.Link>
           </Nav>
         </Navbar.Collapse>
-        <div>Arun Daniel</div>
+        <div className="nav-user-pill">Arun Daniel</div>
     </Navbar>
   );
 }

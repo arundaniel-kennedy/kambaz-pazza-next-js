@@ -1,0 +1,25 @@
+@use "../../scss" as *;
+
+.manage-class-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 400;
+    padding: 0;
+    height: 65px;
+
+    a {
+        max-width: 140px;
+        text-align: center;
+        height: 100%;
+        padding: 0px 23px;
+        vertical-align: middle;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    a.active {
+        background: white;
+    }
+}

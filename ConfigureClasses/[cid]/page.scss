@@ -1,0 +1,23 @@
+@use "../../scss" as *;
+@use "sass:color";
+
+.manage-class-content-wrapper {
+    display: flex;
+    padding-inline: 5vw;
+    padding-top: 25px;
+
+    --box-size: 220px;
+    .blue-info-box {
+        border: 2px solid $primary-color;
+        border-radius: 8px;
+        background-color: rgba($primary-color-rgb / 0.1);
+        filter: brightness(150%);
+        font-size: 0.9rem;
+        padding: 10px 20px;
+        width: var(--box-size);
+    }
+
+    .manage-content {
+
+    }
+}

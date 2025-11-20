@@ -1,0 +1,9 @@
+:root {
+    --primary-color: rgb(12, 95, 171);
+    --primary-color-rgb: 12 95 171;
+    --primary-font-color: white;
+}
+
+$primary-color: var(--primary-color);
+$primary-font-color: var(--primary-font-color);
+$primary-color-rgb: var(--primary-color-rgb);
