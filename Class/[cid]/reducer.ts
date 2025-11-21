@@ -1,15 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {};
+const initialState = {
+  showSidebar: true,
+};
 
 const classSlice = createSlice({
-    name: "class",
-    initialState,
-    reducers: {
-        getPostsFromClass: (state, action) => {
-
-        },
+  name: "class",
+  initialState,
+  reducers: {
+    getPostsFromClass: (state, action) => {},
+    toggleSidebar: (state, action) => {
+      state.showSidebar = action.payload;
     },
+  },
 });
-export const { getPostsFromClass } = classSlice.actions;
+export const { getPostsFromClass,toggleSidebar } = classSlice.actions;
 export default classSlice.reducer;

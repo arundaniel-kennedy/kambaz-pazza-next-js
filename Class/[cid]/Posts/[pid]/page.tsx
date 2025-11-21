@@ -1,9 +1,12 @@
+"use client";
+import { useParams } from 'next/navigation';
 import React from 'react'
 
-export default function page() {
+export default function Posts() {
+  const {cid,pid} = useParams();
   return (
     <div>
-      actual content
+      Post {pid} for Class {cid}
     </div>
   )
 }

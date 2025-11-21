@@ -1,0 +1,83 @@
+.sidebar-wrapper {
+
+  .sidebar-buttons {
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    display: flex;
+
+    .new-post-button {
+      padding: 10px;
+      background-color: #0c5fab;
+    }
+
+    .search-icon {
+      width: auto;
+      height: auto;
+      margin-left: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      border-right: none;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      color: #555;
+    }
+    .search-bar {
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      height: auto;
+      width: 195px;
+      border-left: none;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      margin-right:0px;
+    }
+  }
+
+  .posts-feed {
+    margin-top: 30px;
+    .all-posts-dropdown {
+      margin-left: 20px;
+      border: 1px solid lightgray;
+      border-radius: 8px;
+      margin-right: 20px;
+    }
+    .posts-list  {
+      border: 1px solid lightgray;
+      padding: 10px;
+      border-radius: 10px;
+      margin-right: 20px;
+      .posts-list-group {
+        .post-link {
+          color: black;
+          text-decoration: none;
+          border-radius: 10px;
+          margin-bottom: 12px;
+          .post-item {
+            &:hover {
+              background-color: #f0f0f0;
+              cursor: pointer;
+            }
+          }
+        }
+        .post-category-today{
+          margin-bottom: 20px;
+          border-radius: 10px;
+          .post-today-cursor{
+            cursor: pointer;
+          }
+          
+        }
+        .post-category-yesterday{
+          margin-bottom:20px;
+          border-radius:10px;
+          border-top-width: 1px;
+          .post-yesterday-cursor{
+            cursor: pointer;
+          }
+          
+        }
+      }
+    }
+  }
+}
