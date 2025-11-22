@@ -1,5 +1,7 @@
 .sidebar-wrapper {
-
+  border-right: 1px solid lightgray;
+  height: 100vh;
+  overflow-y: auto;
   .sidebar-buttons {
     margin-top: 20px;
     margin-left: 20px;
@@ -26,11 +28,10 @@
       border-radius: 8px;
       border: 1px solid #ccc;
       height: auto;
-      width: 195px;
+      width: 175px;
       border-left: none;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
-      margin-right:0px;
     }
   }
 
@@ -42,8 +43,7 @@
       border-radius: 8px;
       margin-right: 20px;
     }
-    .posts-list  {
-      border: 1px solid lightgray;
+    .posts-list {
       padding: 10px;
       border-radius: 10px;
       margin-right: 20px;
@@ -54,28 +54,45 @@
           border-radius: 10px;
           margin-bottom: 12px;
           .post-item {
+            font-size: small;
             &:hover {
               background-color: #f0f0f0;
               cursor: pointer;
             }
+            .posts-title {
+              font-weight: bold;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              line-clamp: 1;
+              -webkit-box-orient: vertical;
+            }
+            .posts-description {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 3;
+              line-clamp: 3;
+              -webkit-box-orient: vertical;
+              color: gray;
+            }
           }
         }
-        .post-category-today{
+        .post-category-today {
           margin-bottom: 20px;
           border-radius: 10px;
-          .post-today-cursor{
+          .post-today-cursor {
             cursor: pointer;
           }
-          
         }
-        .post-category-yesterday{
-          margin-bottom:20px;
-          border-radius:10px;
+        .post-category-yesterday {
+          margin-bottom: 20px;
+          border-radius: 10px;
           border-top-width: 1px;
-          .post-yesterday-cursor{
+          .post-yesterday-cursor {
             cursor: pointer;
           }
-          
         }
       }
     }
