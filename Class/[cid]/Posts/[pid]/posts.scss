@@ -1,4 +1,5 @@
 .post-screen-wrapper {
+  
   .posts-title {
     font-weight: bold;
     margin-bottom: 10px;
@@ -20,5 +21,17 @@
   .edit-button {
     background-color: #0c5fab;
     margin-bottom: 20px;
+  }
+
+  .cancel-button {
+    background-color: lightgray;
+    margin-bottom: 20px;
+    border: none;
+  }
+  
+  .qv-container{
+    background-color: lightgray;
+    border-radius:10px;
+    padding:10px;
   }
 }

@@ -13,7 +13,7 @@ import {
 } from "react-bootstrap";
 import { CiCirclePlus, CiSearch } from "react-icons/ci";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { GoTriangleDown } from "react-icons/go";
 import { PiStudentBold } from "react-icons/pi";
 import { FaChalkboardTeacher } from "react-icons/fa";
@@ -23,7 +23,9 @@ export default function Sidebar() {
   const [togglePostsYesterday, setTogglePostsYesterday] = useState(true);
   const [togglePostsLastWeek, setTogglePostsLastWeek] = useState(true);
   const [togglePostsDateWeek, setTogglePostsDateWeek] = useState(true);
-  const { cid } = useParams();
+  const { cid, pid } = useParams();
+  const pathname = usePathname();
+
   return (
     <div className="sidebar-wrapper">
       {/* Sidebar Buttons */}
@@ -68,10 +70,14 @@ export default function Sidebar() {
                     href={`/Pazza/Class/${cid}/Posts/123`}
                     className="post-link"
                   >
-                    <ListGroupItem className="post-item">
+                    <ListGroupItem
+                      className={`post-item  ${
+                        pathname.includes("123") ? " bg-primary-subtle" : ""
+                      }`}
+                    >
                       <div className="post-time float-end">Time</div>
                       <div className="posts-title">
-                        <span className="border border-1 border-dark rounded ">
+                        <span className="border border-1 border-dark rounded">
                           <FaChalkboardTeacher className="me-1" />
                           Instr
                         </span>{" "}
@@ -109,7 +115,11 @@ export default function Sidebar() {
                     href={`/Pazza/Class/${cid}/Posts/124`}
                     className="post-link"
                   >
-                    <ListGroupItem className="post-item">
+                    <ListGroupItem
+                      className={`post-item  ${
+                        pathname.includes("124") ? " bg-primary-subtle" : ""
+                      }`}
+                    >
                       <div className="post-time float-end">Time</div>
                       <div className="posts-title">
                         <span className="border border-1 border-dark rounded ">
@@ -150,7 +160,11 @@ export default function Sidebar() {
                     href={`/Pazza/Class/${cid}/Posts/125`}
                     className="post-link"
                   >
-                    <ListGroupItem className="post-item">
+                    <ListGroupItem
+                      className={`post-item  ${
+                        pathname.includes("125") ? " bg-primary-subtle" : ""
+                      }`}
+                    >
                       <div className="post-time float-end">Time</div>
                       <div className="posts-title">
                         <span className="border border-1 border-dark rounded ">
@@ -191,7 +205,11 @@ export default function Sidebar() {
                     href={`/Pazza/Class/${cid}/Posts/126`}
                     className="post-link"
                   >
-                    <ListGroupItem className="post-item">
+                    <ListGroupItem
+                      className={`post-item  ${
+                        pathname.includes("126") ? " bg-primary-subtle" : ""
+                      }`}
+                    >
                       <div className="post-time float-end">Time</div>
                       <div className="posts-title">
                         <span className="border border-1 border-dark rounded ">
