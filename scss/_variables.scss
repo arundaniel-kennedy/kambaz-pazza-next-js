@@ -1,9 +1,30 @@
-:root {
-    --primary-color: rgb(12, 95, 171);
-    --primary-color-rgb: 12 95 171;
-    --primary-font-color: white;
+@use "sass:map";
+@use "sass:color";
+@use "sass:string";
+
+$variables: (
+    "primary-color": rgb(12, 95, 171),
+    "primary-font-color": white,
+    "secondary-border-color": lightgray,
+    "main-navbar-height": 48px,
+    "main-navbar-z": 10,
+);
+
+$updated_variables: ();
+
+@each $var_name, $value in $variables {
+    @if string.index($var_name, "color") {
+        $red: color.channel($value, "red", $space: rgb);
+        $blue: color.channel($value, "blue", $space: rgb);
+        $green: color.channel($value, "green", $space: rgb);
+        $updated_variables: map.set($updated_variables, #{$var_name} + "_rgb", "#{$red} #{$green} #{$blue}");
+    }
 }
 
-$primary-color: var(--primary-color);
-$primary-font-color: var(--primary-font-color);
-$primary-color-rgb: var(--primary-color-rgb);
+$variables: map.deep-merge($variables, $updated_variables);
+
+:root {
+    @each $var_name, $value in $variables {
+        --#{$var_name}: #{$value};
+    }
+}

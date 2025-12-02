@@ -1,25 +1,27 @@
 @use "scss" as *;
 
 .navbar.main-nav {
-    background-color: $primary-color !important;
-    color: $primary-font-color;
+    background-color: vars(primary-color) !important;
+    color: vars(primary-font-color);
     font-weight: 900;
+    padding: 0;
+    height: var(--main-navbar-height);
 
     a {
-        color: $primary-font-color;
+        color: vars(primary-font-color);
 
         &:hover {
-            color: $primary-font-color !important;
+            color: vars(primary-font-color) !important;
             text-decoration: underline;
         }
         &:active,
         &:focus-within,
         &.active {
-            color: $primary-font-color !important;
+            color: vars(primary-font-color) !important;
         }
     }
     .nav-user-pill {
-        background-color: $primary-color;
+        background-color: vars(primary-color);
         padding: 5px 10px;
         border-radius: 20px;
         filter: brightness(90%);

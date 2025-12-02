@@ -4,16 +4,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 0.8rem;
     font-weight: 400;
     padding: 0;
     height: 65px;
 
     a {
-        max-width: 140px;
+        // max-width: 140px;
+        width: fit-content;
         text-align: center;
         height: 100%;
-        padding: 0px 23px;
+        padding: 0px 28px;
         vertical-align: middle;
         display: flex;
         justify-content: center;

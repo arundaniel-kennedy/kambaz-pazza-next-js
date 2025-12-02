@@ -2,22 +2,48 @@
 @use "sass:color";
 
 .manage-class-content-wrapper {
-    display: flex;
+    margin: 0;
     padding-inline: 5vw;
-    padding-top: 25px;
+    height: calc(100vh - var(--main-navbar-height) - 65px);
+    position: relative;
+    overflow-y: auto;
 
     --box-size: 220px;
-    .blue-info-box {
-        border: 2px solid $primary-color;
-        border-radius: 8px;
-        background-color: rgba($primary-color-rgb / 0.1);
-        filter: brightness(150%);
-        font-size: 0.9rem;
-        padding: 10px 20px;
-        width: var(--box-size);
+
+    .class-manage-content {
+        border-bottom: 1px solid vars(secondary-border-color);
     }
 
-    .manage-content {
+    .basic-info-wrapper {
+        margin-top: 25px;
+        display: flex;
+        gap: 25px;
 
+        .blue-info-box {
+            border: 2px solid color.adjust(varv(primary-color), $lightness: -10%);
+            border-radius: 8px;
+            background-color: rgba(vars(primary-color_rgb) / 0.1);
+            filter: brightness(150%);
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            width: var(--box-size);
+            height: fit-content;
+
+            b {
+                color: color.adjust(varv(primary-color), $lightness: -10%);
+            }
+        }
+
+        .content {
+            width: calc(100% - var(--box-size));
+        }
+    }
+    .form-group {
+        margin-bottom: 17px;
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
     }
 }
