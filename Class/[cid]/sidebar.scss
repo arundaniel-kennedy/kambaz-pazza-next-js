@@ -1,13 +1,12 @@
 .sidebar-wrapper {
   border-right: 1px solid lightgray;
   height: 100vh;
-  overflow-y: auto;
+  
   .sidebar-buttons {
     margin-top: 20px;
     margin-left: 20px;
-    margin-bottom: 20px;
+    
     display: flex;
-
     .new-post-button {
       padding: 10px;
       background-color: #0c5fab;
@@ -36,23 +35,19 @@
   }
 
   .posts-feed {
-    margin-top: 30px;
-    .all-posts-dropdown {
-      margin-left: 20px;
-      border: 1px solid lightgray;
-      border-radius: 8px;
-      margin-right: 20px;
-    }
+    overflow-y:auto;
+    height: calc(100vh - 120px);
     .posts-list {
       padding: 10px;
       border-radius: 10px;
-      margin-right: 20px;
+      margin-right: 10px;
+      margin-left:10px;
       .posts-list-group {
         .post-link {
           color: black;
           text-decoration: none;
           border-radius: 10px;
-          margin-bottom: 12px;
+          margin-bottom: 5px;
           .post-item {
             font-size: small;
             &:hover {
@@ -82,14 +77,16 @@
           
         }
         .post-category-today {
-          margin-bottom: 20px;
+          padding:5px;
+          margin-bottom: 10px;
           border-radius: 10px;
           .post-today-cursor {
             cursor: pointer;
           }
         }
         .post-category-yesterday {
-          margin-bottom: 20px;
+          padding:5px;
+          margin-bottom: 5px;
           border-radius: 10px;
           border-top-width: 1px;
           .post-yesterday-cursor {

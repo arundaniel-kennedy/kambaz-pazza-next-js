@@ -40,20 +40,8 @@ export default function Sidebar() {
         <FormControl className="search-bar" placeholder="Search posts..." />
       </div>
       <div className="posts-feed">
-        {/* Dropdown For All Posts */}
-        <div className="all-posts-dropdown">
-          <Dropdown>
-            <DropdownToggle variant="light">All Posts</DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem>All</DropdownItem>
-              <DropdownItem>Instructor</DropdownItem>
-              <DropdownItem>Student</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-
         {/* All Posts */}
-        <div className="posts-list mt-3 ms-3">
+        <div className="posts-list ">
           <ListGroup className="posts-list-group">
             {/* Today Category */}
             <ListGroupItem className="post-category-today">
