@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import classReducer from "./Class/[cid]/reducer"
-import classConfigureReducer from "./ConfigureClasses/[cid]/reducer"
+import classConfigureReducer from "./ConfigureClasses/[cid]/data/reducer"
 
 const store = configureStore({
     reducer: {

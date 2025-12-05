@@ -12,12 +12,14 @@
 
     .class-manage-content {
         border-bottom: 1px solid vars(secondary-border-color);
-    }
-
-    .basic-info-wrapper {
-        margin-top: 25px;
         display: flex;
         gap: 25px;
+        margin-top: 25px;
+        padding-bottom: 20px;
+
+        .content {
+            width: calc(100% - var(--box-size));
+        }
 
         .blue-info-box {
             border: 2px solid color.adjust(varv(primary-color), $lightness: -10%);
@@ -33,11 +35,8 @@
                 color: color.adjust(varv(primary-color), $lightness: -10%);
             }
         }
-
-        .content {
-            width: calc(100% - var(--box-size));
-        }
     }
+
     .form-group {
         margin-bottom: 17px;
 
