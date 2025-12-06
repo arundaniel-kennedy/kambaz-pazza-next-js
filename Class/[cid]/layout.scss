@@ -12,11 +12,12 @@
     height: 100%;
   }
   .sidebar-toggle-icon {
-    cursor: pointer;
+    margin-left: 0px; 
   }
 
   .icon-hover:hover {
     color: #0d6efd;
+    cursor: pointer;
   }
   .rightside-wrapper {
     width: calc(100% - var(--sidebar-size));
