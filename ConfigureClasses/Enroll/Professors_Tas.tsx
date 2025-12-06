@@ -1,8 +1,14 @@
+"use client";
+
 import React from "react";
-import { FormControl } from "react-bootstrap";
+import { Form, FormControl } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { storeType } from "../../store";
 
 export default function Professors_Tas() {
-
+  const { enrollment } = useSelector(
+    (state: storeType) => state.classConfigureReducer
+  );
   return (
     <div className="class-manage-content enroll-professor-wrapper">
       <div className="blue-info-box">
@@ -44,6 +50,20 @@ export default function Professors_Tas() {
           <div className="btn btn-sm btn-outline-primary">Select all</div>
           <div className="btn btn-sm btn-outline-primary">Remove selected</div>
         </div>
+        <ul className="mt-3 ps-0">
+          {enrollment?.instructors?.map((instructor) => {
+            return (
+              <li
+                key={"instructor_" + instructor.name}
+                className="d-flex flex-row align-items-center gap-2"
+              >
+                <Form.Check />
+                {instructor.name}{" "}({instructor.email},{" "}
+                {instructor.alternate_email})
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );

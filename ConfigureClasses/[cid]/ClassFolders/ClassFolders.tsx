@@ -94,11 +94,12 @@ export default function ClassFolders() {
               style={{ width: "50px", textAlign: "center" }}
               disabled={!suffix}
             />
+            <button className="btn btn-primary ms-2 w-25">Add</button>
           </div>
         </div>
         <div className="form-group">
           <label htmlFor="">Manage Folders</label>
-          <span className="d-inline">
+          <span className="d-block">
             Reorder, delete, edit folder names, or create subfolders. You can
             create up to 2 levels of nesting ("subfolders" and "subfolders to
             subfolders"). Manually sort folders and subfolders using the grip

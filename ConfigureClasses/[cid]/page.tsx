@@ -14,9 +14,9 @@ export default function page() {
       <Navigation />
       <div className="manage-class-content-wrapper">
         <Container>
-          {/* <ClassInfo />
-          <QandASettings /> */}
-          {/* <ClassFolders /> */}
+          <ClassInfo />
+          <QandASettings />
+          <ClassFolders />
           <Professors_Tas />
         </Container>
       </div>
