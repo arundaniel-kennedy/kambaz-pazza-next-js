@@ -1,0 +1,10 @@
+@use "../../../scss" as *;
+@use "sass:color";
+
+.folder-pill {
+    background-color: color.adjust(varv(primary-color), $alpha: -0.7, $lightness: 20%);
+    color: color.adjust(varv(primary-color), $lightness: -5%);
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+}

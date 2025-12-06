@@ -1,8 +1,8 @@
 import * as React from "react";
-interface SvgComponentProps extends React.SVGProps<SVGSVGElement> {}
 
-export default function SvgComponent(props: SvgComponentProps) {
-  let color = "#fff";
+export default function SvgComponent(props: React.SVGProps<SVGSVGElement>) {
+  const color = "#fff";
+  
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

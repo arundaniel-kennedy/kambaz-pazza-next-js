@@ -11,7 +11,7 @@ import Link from "next/link";
 export default function Navigation() {
   const { cid } = useParams();
   return (
-    <Navbar expand="lg" className="px-4 main-nav">
+    <Navbar expand="lg" className="px-2 main-nav">
         <Navbar.Brand href="#home"><PazzaLogo width={"90px"} className="mt-2"/></Navbar.Brand>
         <div>Web Dev - CS5100</div>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
