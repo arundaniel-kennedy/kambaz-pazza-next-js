@@ -8,5 +8,5 @@ const store = configureStore({
         classConfigureReducer
     }
 })
-export type RootState = ReturnType<typeof store.getState>;
+export type storeType = ReturnType<typeof store.getState>;
 export default store;
