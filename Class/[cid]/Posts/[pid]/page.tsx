@@ -28,7 +28,7 @@ import {
   createButton,
 } from "react-simple-wysiwyg";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/src/app/Pazza/store";
+import { storeType } from "@/src/app/Pazza/store";
 import type { Posts } from "../../DataStructure";
 import { setPosts } from "../../reducer";
 import { FaRegComment } from "react-icons/fa6";
@@ -42,7 +42,7 @@ export default function Posts() {
 
   const [showEdit, setShowEdit] = useState(false);
   const { cid, pid } = useParams();
-  const posts = useSelector((state: RootState) => state.classReducer.posts);
+  const posts = useSelector((state: storeType) => state.classReducer.posts);
   const [post, setPost] = useState<Posts | undefined>({});
   const dispatch = useDispatch();
   const [html, setHtml] = useState("<b>HTML</b>");

@@ -17,7 +17,7 @@ import { useParams, usePathname } from "next/navigation";
 import { GoTriangleDown } from "react-icons/go";
 import { PiStudentBold } from "react-icons/pi";
 import { FaChalkboardTeacher } from "react-icons/fa";
-import { RootState } from "../../store";
+import { storeType } from "../../store";
 import { useSelector } from "react-redux";
 
 export default function Sidebar() {
@@ -27,7 +27,7 @@ export default function Sidebar() {
   const [togglePostsDateWeek, setTogglePostsDateWeek] = useState(true);
   const { cid, pid } = useParams();
   const pathname = usePathname();
-  const posts = useSelector((state: RootState) => state.classReducer.posts);
+  const posts = useSelector((state: storeType) => state.classReducer.posts);
 
   return (
     <div className="sidebar-wrapper">
