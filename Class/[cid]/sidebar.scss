@@ -1,0 +1,99 @@
+.sidebar-wrapper {
+  border-right: 1px solid lightgray;
+  height: 100vh;
+  
+  .sidebar-buttons {
+    margin-top: 20px;
+    margin-left: 20px;
+    
+    display: flex;
+    .new-post-button {
+      padding: 10px;
+      background-color: #0c5fab;
+    }
+
+    .search-icon {
+      width: auto;
+      height: auto;
+      margin-left: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      border-right: none;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      color: #555;
+    }
+    .search-bar {
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      height: auto;
+      width: 175px;
+      border-left: none;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  .posts-feed {
+    overflow-y:auto;
+    height: calc(100vh - 120px);
+    .posts-list {
+      padding: 10px;
+      border-radius: 10px;
+      margin-right: 10px;
+      margin-left:10px;
+      .posts-list-group {
+        .post-link {
+          color: black;
+          text-decoration: none;
+          border-radius: 10px;
+          margin-bottom: 5px;
+          .post-item {
+            font-size: small;
+            &:hover {
+              background-color: #f0f0f0;
+              cursor: pointer;
+            }
+            .posts-title {
+              font-weight: bold;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              line-clamp: 1;
+              -webkit-box-orient: vertical;
+            }
+            .posts-description {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 3;
+              line-clamp: 3;
+              -webkit-box-orient: vertical;
+              color: gray;
+            }
+            
+          }
+          
+        }
+        .post-category-today {
+          padding:5px;
+          margin-bottom: 10px;
+          border-radius: 10px;
+          .post-today-cursor {
+            cursor: pointer;
+          }
+        }
+        .post-category-yesterday {
+          padding:5px;
+          margin-bottom: 5px;
+          border-radius: 10px;
+          border-top-width: 1px;
+          .post-yesterday-cursor {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
