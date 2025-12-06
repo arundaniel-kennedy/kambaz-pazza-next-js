@@ -5,7 +5,7 @@ export default function Create() {
   return (
     <div>
       <h1>Pazza Create Page</h1>
-      Create post
+      Create post just now added by ashwin
     </div>
   );
 }
