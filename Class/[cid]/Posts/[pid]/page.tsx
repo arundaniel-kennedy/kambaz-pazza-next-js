@@ -26,10 +26,9 @@ import {
   createButton,
 } from "react-simple-wysiwyg";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/src/app/Pazza/store";
 import type { Posts } from "../../DataStructure";
 import { setPosts } from "../../reducer";
-
+import type { RootState } from "../../../../store";
 export default function Posts() {
   //All const declarations
   const BtnAlignCenter = createButton("Align center", "≡", "justifyCenter");
@@ -45,7 +44,7 @@ export default function Posts() {
 
   //Screen load
   useEffect(() => {
-    const post = posts.find((p) => p.id === pid);
+    const post = posts.find((p: Posts) => p.id === pid);
     setPost(post);
   }, []);
 
