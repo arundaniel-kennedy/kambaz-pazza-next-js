@@ -20,6 +20,7 @@ import { FaChalkboardTeacher } from "react-icons/fa";
 import { storeType } from "../../store";
 import { useSelector } from "react-redux";
 
+
 export default function Sidebar() {
   const [togglePostsToday, setTogglePostsToday] = useState(true);
   const [togglePostsYesterday, setTogglePostsYesterday] = useState(true);
@@ -28,7 +29,19 @@ export default function Sidebar() {
   const { cid, pid } = useParams();
   const pathname = usePathname();
   const posts = useSelector((state: storeType) => state.classReducer.posts);
-
+  
+  const getYesterdayPosts = () => {
+    //client call to get yesterday posts
+  };
+  const getTodayPosts = () => {
+    //client call to dget today posts
+  };
+  const getWeekWisePosts = () => {
+    //client calll to get week wise posts
+  };
+  const yesterdayPosts = getYesterdayPosts();
+  const todayPosts = getTodayPosts();
+  const weekWisePosts = getWeekWisePosts();
   return (
     <div className="sidebar-wrapper">
       {/* Sidebar Buttons */}
@@ -60,7 +73,7 @@ export default function Sidebar() {
                   {posts.map((post) => {
                     return (
                       <div key={post._id}>
-                        <Link 
+                        <Link
                           href={`/Pazza/Class/${cid}/Posts/${post._id}`}
                           className="post-link"
                         >
@@ -71,12 +84,27 @@ export default function Sidebar() {
                                 : ""
                             }`}
                           >
-                            <div className="post-time float-end">{post.timestamp.slice(0,10)}</div>
+                            <div className="post-time float-end">
+                              {post.timestamp.slice(0, 10)}
+                            </div>
                             <div className="posts-title">
-                              <span className="border border-1 border-dark rounded">
-                                <FaChalkboardTeacher className="me-1" />
-                                Instr
-                              </span>{" "}
+                              {post.author.includes("instructor") && (
+                                <>
+                                  <span className="border border-1 border-dark rounded">
+                                    <FaChalkboardTeacher className="me-1" />
+                                    Instr
+                                  </span>{" "}
+                                </>
+                              )}
+                              {post.author.includes("student") && (
+                                <>
+                                  <span className="border border-1 border-dark rounded ">
+                                    <PiStudentBold className="me-1" />
+                                    Stu
+                                  </span>{" "}
+                                </>
+                              )}
+
                               {post.summary}
                             </div>
                             <div className="posts-description">
