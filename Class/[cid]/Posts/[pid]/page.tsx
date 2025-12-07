@@ -113,6 +113,7 @@ export default function Posts() {
               </Toolbar>
             </Editor>
           </EditorProvider>
+          
         </div>
       )}
       {!showEdit && <div className="posts-description">{post?.details}</div>}

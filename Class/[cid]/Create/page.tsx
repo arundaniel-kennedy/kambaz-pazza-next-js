@@ -22,6 +22,7 @@ import {
   resetForm,
 } from './reducer';
 
+
 type PostType = 'question' | 'note' | 'poll';
 type PostTo = 'entire-class' | 'individual';
 
@@ -105,6 +106,7 @@ export default function NewPostScreen() {
     }
 
     const postData = {
+      id: Date.now().toString(),
       postType: formData.postType as PostType,
       postTo: formData.postTo as PostTo,
       selectedUsers: formData.postTo === 'individual' ? formData.selectedUsers : [],
@@ -116,15 +118,11 @@ export default function NewPostScreen() {
 
     dispatch(addPost(postData));
     dispatch(resetForm());
-
-    // TODO: Navigate to LOP and show new post
-    console.log('Post created:', postData);
   };
+
 
   const handleCancel = () => {
     dispatch(resetForm());
-    // TODO: Navigate back to Class at a Glance Screen (CGS)
-    console.log('Cancel - returning to CGS');
   };
 
   const getPostButtonText = () => {
@@ -134,9 +132,9 @@ export default function NewPostScreen() {
   };
 
   return (
-    <Container>
-      <div className="d-flex justify-contents-between p-4 gap-2">
-        <IoArrowBackOutline className="text-primary fs-3 mr-3 " />
+    <div>
+      <div className="d-flex justify-contents-between  gap-2">
+        <IoArrowBackOutline className="text-primary fs-3  " />
         <FaPlusCircle className="bg-white fs-5" />
         <h5>Create New Post</h5>
       </div>
@@ -411,6 +409,6 @@ export default function NewPostScreen() {
           Cancel
         </Button>
       </div>
-    </Container>
+    </div>
   );
 }

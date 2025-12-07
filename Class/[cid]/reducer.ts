@@ -13,6 +13,11 @@ const classSlice = createSlice({
     setPosts: (state, { payload: posts }) => {
       state.posts = posts;
     },
+    
+    addPost: (state, { payload: post }) => {
+    const newPost = { ...post, _id: uuidv4() };
+    state.posts = [...state.posts, newPost] as any;
+    },
     updatePost: (state, { payload: post }) => {
       state.posts = state.posts.map((p) => (post.id === p.id ? post : p));
     },
@@ -22,6 +27,10 @@ const classSlice = createSlice({
     },
   },
 });
-export const { getPostsFromClass, toggleSidebar, setPosts } =
+export const { getPostsFromClass, toggleSidebar, setPosts, addPost } =
   classSlice.actions;
 export default classSlice.reducer;
+function uuidv4() {
+  throw new Error("Function not implemented.");
+}
+
