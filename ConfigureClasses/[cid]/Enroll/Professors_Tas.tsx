@@ -3,7 +3,7 @@
 import React from "react";
 import { Form, FormControl } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { storeType } from "../../store";
+import { storeType } from "../../../store";
 
 export default function Professors_Tas() {
   const { enrollment } = useSelector(

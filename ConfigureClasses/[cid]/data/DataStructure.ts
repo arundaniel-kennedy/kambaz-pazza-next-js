@@ -35,8 +35,9 @@ export default interface ClassDetails {
     folders_settings?: {
         enable_folders?: boolean;
         folders?: {
+            _id?: string;
             name: string;
-            subfolder?: string[];
+            course?: string;
         }[];
     },
     enrollment?: {

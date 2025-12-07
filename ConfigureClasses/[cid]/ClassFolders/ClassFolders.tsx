@@ -1,22 +1,85 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, FormControl } from "react-bootstrap";
 import { storeType } from "../../../store";
 import { updateFolderSettings } from "../data/reducer";
-import { FaEyeSlash, FaPencil, FaPlus, FaTrash } from "react-icons/fa6";
+import { FaCheck, FaEyeSlash, FaPencil, FaPlus, FaTrash } from "react-icons/fa6";
 import { BsGripVertical } from "react-icons/bs";
 
+import * as client from "../data/client";
+
 import "./ClassFolders.scss";
+import { useParams } from "next/navigation";
 
 export default function ClassFolders() {
+  const { cid } = useParams();
   const { folders_settings } = useSelector(
     (state: storeType) => state.classConfigureReducer
   );
+  const [prefix, setPrefix] = useState("");
   const [suffix, setSuffix] = useState(false);
+  const [suffixStart, setSuffixStart] = useState(1);
+  const [suffixEnd, setSuffixEnd] = useState(4);
   const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
+  const [editFolder, SetEditFolder] = useState("")
   const dispatch = useDispatch();
+
+  const fetchFolders = async () => {
+    const folders = await client.fetchFoldersForCourse(cid as string);
+    dispatch(updateFolderSettings({ ...folders_settings, folders: folders }));
+  };
+  const createNewFolder = async () => {
+    let folders = [];
+    if (suffix) {
+      for (let i = suffixStart; i <= suffixEnd; i++) {
+        folders.push(prefix + "" + i);
+      }
+    } else {
+      folders.push(prefix);
+    }
+    const addedFolders = await client.createNewFolder(cid as string, folders);
+    if (addedFolders.hasOwnProperty("message")) {
+      if (addedFolders.message.message.includes("duplicate key error"))
+        alert(`Entered folder name(s) already present under course ${cid}`);
+    } else {
+      let updatedFolders = JSON.parse(
+        JSON.stringify(folders_settings?.folders)
+      );
+      dispatch(
+        updateFolderSettings({
+          ...folders_settings,
+          folders: [...updatedFolders, ...addedFolders],
+        })
+      );
+    }
+  };
+  const deleteFolders = async () => {
+    await client.deleteFoldersFromCourse(cid as string, selectedFolders);
+    let updatedFolders = JSON.parse(JSON.stringify(folders_settings?.folders));
+    dispatch(
+      updateFolderSettings({
+        ...folders_settings,
+        folders: updatedFolders.filter(
+          (folder: any) => !selectedFolders.includes(folder.name)
+        ),
+      })
+    );
+    setSelectedFolders([]);
+  };
+
+  const startFolderEdit = (e: any) => {
+    e.preventDefault();
+    let div = document.createElement("span")
+    div.appendChild(document.createElement("FaCheck"))
+    div.appendChild(document.createTextNode("Done"))
+    e.target.replaceChildren(div)
+  };
+  useEffect(() => {
+    fetchFolders();
+  }, []);
+
   return (
     <div
       className="class-manage-content folder-setting-wrapper"
@@ -61,14 +124,8 @@ export default function ClassFolders() {
             <FormControl
               className="d-inline ms-2"
               placeholder="Add a folder(s)"
-              onChange={(e) =>
-                dispatch(
-                  updateFolderSettings({
-                    ...folders_settings,
-                    enable_folders: !folders_settings?.enable_folders,
-                  })
-                )
-              }
+              defaultValue={prefix}
+              onChange={(e) => setPrefix(e.target.value)}
             />
             <Form.Check
               type="checkbox"
@@ -82,7 +139,12 @@ export default function ClassFolders() {
             <FormControl
               className="d-inline"
               style={{ width: "50px", textAlign: "center" }}
-              defaultValue={1}
+              defaultValue={suffixStart}
+              onChange={(e) =>
+                setSuffixStart(
+                  e.target.value != "" ? parseInt(e.target.value) : 0
+                )
+              }
               disabled={!suffix}
             />
             <label htmlFor="" className="mx-2">
@@ -90,11 +152,22 @@ export default function ClassFolders() {
             </label>
             <FormControl
               className="d-inline w-10"
-              defaultValue={4}
+              defaultValue={suffixEnd}
+              onChange={(e) =>
+                setSuffixEnd(
+                  e.target.value != "" ? parseInt(e.target.value) : 0
+                )
+              }
               style={{ width: "50px", textAlign: "center" }}
               disabled={!suffix}
+              id="folderSuffixEnd"
             />
-            <button className="btn btn-primary ms-2 w-25">Add</button>
+            <button
+              className="btn btn-primary ms-2 w-25"
+              onClick={createNewFolder}
+            >
+              Add
+            </button>
           </div>
         </div>
         <div className="form-group">
@@ -109,6 +182,7 @@ export default function ClassFolders() {
             <button
               className="btn btn-sm btn-outline-primary align-items-center d-flex gap-2"
               disabled={!(selectedFolders.length > 0)}
+              onClick={deleteFolders}
             >
               <FaTrash /> Delete selected folders
             </button>
@@ -120,14 +194,24 @@ export default function ClassFolders() {
           <ul>
             {folders_settings?.folders?.map((folder) => {
               return (
-                <li key={"folder_" + folder.name} className="d-flex flex-row align-items-center">
-                  <Form.Check type="checkbox" onChange={e => {
-                    if (e.target.checked) {
-                      setSelectedFolders([...selectedFolders, folder.name])
-                    } else {
-                      setSelectedFolders(selectedFolders.filter(selectedFolder => selectedFolder != folder.name))
-                    }
-                  }}/>
+                <li
+                  key={"folder_" + folder.name}
+                  className="d-flex flex-row align-items-center mb-2"
+                >
+                  <Form.Check
+                    type="checkbox"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedFolders([...selectedFolders, folder.name]);
+                      } else {
+                        setSelectedFolders(
+                          selectedFolders.filter(
+                            (selectedFolder) => selectedFolder != folder.name
+                          )
+                        );
+                      }
+                    }}
+                  />
                   <BsGripVertical className="mx-2" />
                   <span className="folder-pill">{folder.name}</span>
                   <div
@@ -135,10 +219,17 @@ export default function ClassFolders() {
                     role="group"
                     aria-label="Basic example"
                   >
-                    <button type="button" className="btn btn-sm btn-outline-primary d-flex flex-row align-items-center gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-primary d-flex flex-row align-items-center gap-2"
+                      onClick={startFolderEdit}
+                    >
                       <FaPencil /> Edit
                     </button>
-                    <button type="button" className="btn btn-sm btn-outline-primary d-flex flex-row align-items-center gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-primary d-flex flex-row align-items-center gap-2"
+                    >
                       <FaPlus /> Create Subfolders
                     </button>
                   </div>
@@ -147,7 +238,6 @@ export default function ClassFolders() {
             })}
           </ul>
         </div>
-        <button className="btn btn-primary">Save Changes</button>
       </div>
     </div>
   );

@@ -1,12 +1,13 @@
 import React from "react";
-import Navigation from "./Navigation";
+import { Container } from "react-bootstrap";
 
-import "./page.scss";
+import Navigation from "./Navigation";
 import ClassInfo from "./ClassInfo/ClassInfo";
 import QandASettings from "./QandA/QandASettings";
-import { Container } from "react-bootstrap";
 import ClassFolders from "./ClassFolders/ClassFolders";
-import Professors_Tas from "../Enroll/Professors_Tas";
+import Professors_Tas from "./Enroll/Professors_Tas";
+
+import "./page.scss";
 
 export default function page() {
   return (

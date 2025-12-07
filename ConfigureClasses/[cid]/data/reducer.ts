@@ -38,8 +38,7 @@ const initialState: ClassDetails = {
     folders_settings: {
         enable_folders: true,
         folders: [{
-            name: "HW1",
-            subfolder: [],
+            name: "HW1"
         }]
     },
     enrollment: {

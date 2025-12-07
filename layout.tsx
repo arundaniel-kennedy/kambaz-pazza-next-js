@@ -3,6 +3,7 @@
 import { Provider } from "react-redux";
 import Navigation from "./Navigation";
 import store from "./store";
+import Session from "../(Kambaz)/Account/Session";
 
 export default function PazzaLayout({
   children,
@@ -11,8 +12,10 @@ export default function PazzaLayout({
 }>) {
   return (
     <Provider store={store}>
-      <Navigation />
-      {children}
+      <Session>
+        <Navigation />
+        {children}
+      </Session>
     </Provider>
   );
 }
