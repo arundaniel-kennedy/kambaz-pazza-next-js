@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Posts } from "./DataStructure";
-import { posts, followups, replies } from "../../../(Kambaz)/Database";
+import {posts} from "../../data"
 
 const initialState = {
   posts: posts,

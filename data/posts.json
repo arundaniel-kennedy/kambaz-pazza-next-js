@@ -1,0 +1,403 @@
+[
+  {
+    "_id": "post_001",
+    "post_type": "QUESTION",
+    "is_private": false,
+    "is_anonymous": false,
+    "course": "course_101",
+    "author": "instructor_001",
+    "folder": "folder_12",
+    "summary": "How do I implement lazy loading in React?",
+    "details": "I want to improve my page load times. What’s the best way to implement lazy loading for components?",
+    "timestamp": "2025-01-15T10:25:00.000Z",
+    "views": 10,
+    "answer": [
+      {
+        "_id": "ans_001A",
+        "author": "instructor_001",
+        "details": "Use React.lazy() for dynamically importing components and wrap them with <Suspense fallback>. It improves performance for large components.",
+        "timestamp": "2025-01-15T11:00:00.000Z"
+      },
+      {
+        "_id": "ans_001B",
+        "author": "student_collective",
+        "details": "We used lazy loading in our project by splitting big pages into smaller components using dynamic import(). Worked well for us!",
+        "timestamp": "2025-01-15T11:05:00.000Z"
+      }
+    ],
+    "follow_ups": [
+      {
+        "_id": "followup_001",
+        "author": "user_002",
+        "details": "Can you show your current component structure?",
+        "is_resolved": false,
+        "timestamp": "2025-01-15T10:40:00.000Z",
+        "replies": [
+          {
+            "_id": "reply_001",
+            "author": "user_001",
+            "details": "Yes! I'll paste it below.",
+            "timestamp": "2025-01-15T10:45:00.000Z",
+            "replies": []
+          },
+          {
+            "_id": "reply_002",
+            "author": "user_004",
+            "details": "Use React.lazy() for dynamic import.",
+            "timestamp": "2025-01-15T10:50:00.000Z",
+            "replies": [
+              {
+                "_id": "reply_004",
+                "author": "user_002",
+                "details": "And wrap it in <Suspense> fallback.",
+                "timestamp": "2025-01-15T10:52:00.000Z",
+                "replies": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_id": "followup_002",
+        "author": "user_003",
+        "details": "Are you using React Suspense?",
+        "is_resolved": true,
+        "timestamp": "2025-01-15T11:00:00.000Z",
+        "replies": [
+          {
+            "_id": "reply_003",
+            "author": "user_001",
+            "details": "Yes, I started using Suspense recently.",
+            "timestamp": "2025-01-15T11:05:00.000Z",
+            "replies": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "post_002",
+    "post_type": "NOTE",
+    "is_private": false,
+    "is_anonymous": false,
+    "course": "course_101",
+    "author": "student_003",
+    "folder": "folder_05",
+    "summary": "Lecture notes on Dynamic Programming",
+    "details": "These are my notes from Week 6 covering memoization and tabulation.",
+    "timestamp": "2025-02-10T09:10:00.000Z",
+    "views": 15,
+    "answer": [
+      {
+        "_id": "ans_002A",
+        "author": "instructor_001",
+        "details": "Good notes! Make sure to include complexity comparison between memoization and tabulation.",
+        "timestamp": "2025-02-10T09:30:00.000Z"
+      },
+      {
+        "_id": "ans_002B",
+        "author": "student_collective",
+        "details": "We also found that drawing recursion trees helps understand DP faster.",
+        "timestamp": "2025-02-10T09:35:00.000Z"
+      }
+    ],
+    "follow_ups": [
+      {
+        "_id": "followup_003",
+        "author": "user_007",
+        "details": "Can you upload the diagram for longest common subsequence?",
+        "is_resolved": false,
+        "timestamp": "2025-02-10T09:20:00.000Z",
+        "replies": [
+          {
+            "_id": "reply_006",
+            "author": "user_003",
+            "details": "Sure, I'll update the post with the diagram.",
+            "timestamp": "2025-02-10T09:25:00.000Z",
+            "replies": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "post_003",
+    "post_type": "POLL",
+    "is_private": false,
+    "is_anonymous": true,
+    "course": "course_205",
+    "author": "user_005",
+    "folder": "folder_11",
+    "summary": "Which project topic should we choose?",
+    "details": "Options: A) NLP chatbot B) Fraud detection ML C) Social network visualization",
+    "timestamp": "2025-03-01T14:00:00.000Z",
+    "views": 20,
+    "answer": [
+      {
+        "_id": "ans_003A",
+        "author": "instructor_004",
+        "details": "Pick the topic your team has the skills for. NLP chatbot is easier but fraud detection has deeper ML concepts.",
+        "timestamp": "2025-03-01T14:30:00.000Z"
+      },
+      {
+        "_id": "ans_003B",
+        "author": "student_collective",
+        "details": "Most of us think NLP chatbot is manageable within the project timeline.",
+        "timestamp": "2025-03-01T14:35:00.000Z"
+      }
+    ],
+    "follow_ups": [
+      {
+        "_id": "followup_004",
+        "author": "user_009",
+        "details": "I vote for NLP chatbot!",
+        "is_resolved": false,
+        "timestamp": "2025-03-01T14:10:00.000Z",
+        "replies": [
+          {
+            "_id": "reply_007",
+            "author": "user_001",
+            "details": "Same here, NLP sounds fun.",
+            "timestamp": "2025-03-01T14:12:00.000Z",
+            "replies": []
+          },
+          {
+            "_id": "reply_008",
+            "author": "user_010",
+            "details": "Fraud detection is more industry relevant.",
+            "timestamp": "2025-03-01T14:13:00.000Z",
+            "replies": [
+              {
+                "_id": "reply_009",
+                "author": "user_009",
+                "details": "True, but also harder to implement.",
+                "timestamp": "2025-03-01T14:14:00.000Z",
+                "replies": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_id": "followup_005",
+        "author": "user_002",
+        "details": "Can we combine two ideas?",
+        "is_resolved": true,
+        "timestamp": "2025-03-01T14:20:00.000Z",
+        "replies": [
+          {
+            "_id": "reply_010",
+            "author": "user_005",
+            "details": "Professor advised one main topic.",
+            "timestamp": "2025-03-01T14:22:00.000Z",
+            "replies": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "post_004",
+    "post_type": "QUESTION",
+    "is_private": true,
+    "is_anonymous": true,
+    "course": "course_330",
+    "author": "user_011",
+    "folder": "folder_09",
+    "summary": "Confused about database normalization",
+    "details": "What is the practical difference between 3NF and BCNF?",
+    "timestamp": "2025-03-12T16:00:00.000Z",
+    "views": 40,
+    "answer": [
+      {
+        "_id": "ans_004A",
+        "author": "instructor_008",
+        "details": "BCNF is stricter than 3NF. Any dependency where the determinant is not a superkey violates BCNF.",
+        "timestamp": "2025-03-12T16:10:00.000Z"
+      },
+      {
+        "_id": "ans_004B",
+        "author": "student_collective",
+        "details": "We think of BCNF as a stronger, cleaner version of 3NF that removes edge-case anomalies.",
+        "timestamp": "2025-03-12T16:12:00.000Z"
+      }
+    ],
+    "follow_ups": [
+      {
+        "_id": "followup_006",
+        "author": "user_004",
+        "details": "BCNF removes even more functional dependency anomalies.",
+        "is_resolved": false,
+        "timestamp": "2025-03-12T16:05:00.000Z",
+        "replies": [
+          {
+            "_id": "reply_011",
+            "author": "user_011",
+            "details": "Thanks! That helps a lot.",
+            "timestamp": "2025-03-12T16:06:00.000Z",
+            "replies": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "post_005",
+    "post_type": "NOTE",
+    "is_private": false,
+    "is_anonymous": false,
+    "course": "course_150",
+    "author": "user_006",
+    "folder": "folder_03",
+    "summary": "Summary of today's lecture on Graph Search",
+    "details": "Covered BFS, DFS, UCS, A* algorithm and heuristics.",
+    "timestamp": "2025-02-27T10:00:00.000Z",
+    "views": 25,
+    "answer": [
+      {
+        "_id": "ans_005A",
+        "author": "instructor_006",
+        "details": "Great summary! Don't forget to explain admissible heuristics in A*.",
+        "timestamp": "2025-02-27T10:30:00.000Z"
+      },
+      {
+        "_id": "ans_005B",
+        "author": "student_collective",
+        "details": "We found using Manhattan distance works well for grid-based search problems.",
+        "timestamp": "2025-02-27T10:32:00.000Z"
+      }
+    ],
+    "follow_ups": [
+      {
+        "_id": "followup_007",
+        "author": "user_004",
+        "details": "Can you add pseudocode for A*?",
+        "is_resolved": false,
+        "timestamp": "2025-02-27T10:10:00.000Z",
+        "replies": [
+          {
+            "_id": "reply_012",
+            "author": "user_006",
+            "details": "Sure, I'll update the notes.",
+            "timestamp": "2025-02-27T10:15:00.000Z",
+            "replies": []
+          }
+        ]
+      },
+      {
+        "_id": "followup_008",
+        "author": "user_012",
+        "details": "What heuristic did the professor recommend?",
+        "is_resolved": true,
+        "timestamp": "2025-02-27T10:18:00.000Z",
+        "replies": [
+          {
+            "_id": "reply_013",
+            "author": "user_006",
+            "details": "Manhattan distance for grids.",
+            "timestamp": "2025-02-27T10:20:00.000Z",
+            "replies": []
+          },
+          {
+            "_id": "reply_014",
+            "author": "user_004",
+            "details": "Use Euclidean distance when diagonal movement is allowed.",
+            "timestamp": "2025-02-27T10:22:00.000Z",
+            "replies": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "post_006",
+    "post_type": "QUESTION",
+    "is_private": false,
+    "is_anonymous": false,
+    "course": "course_500",
+    "author": "user_008",
+    "folder": "folder_07",
+    "summary": "Why is my Node.js server crashing?",
+    "details": "I'm seeing 'UnhandledPromiseRejectionWarning'. Any idea why?",
+    "timestamp": "2025-04-01T12:30:00.000Z",
+    "views": 78,
+    "answer": [
+      {
+        "_id": "ans_006A",
+        "author": "instructor_010",
+        "details": "Wrap async logic in try/catch or use .catch(), otherwise unhandled rejections crash the server.",
+        "timestamp": "2025-04-01T12:50:00.000Z"
+      },
+      {
+        "_id": "ans_006B",
+        "author": "student_collective",
+        "details": "We also had this issue. Adding return statements inside async handlers fixed it.",
+        "timestamp": "2025-04-01T12:55:00.000Z"
+      }
+    ],
+    "follow_ups": [
+      {
+        "_id": "followup_009",
+        "author": "user_010",
+        "details": "You're probably not catching async errors using try/catch.",
+        "is_resolved": false,
+        "timestamp": "2025-04-01T12:40:00.000Z",
+        "replies": [
+          {
+            "_id": "reply_015",
+            "author": "user_008",
+            "details": "I'll add try/catch around async code.",
+            "timestamp": "2025-04-01T12:42:00.000Z",
+            "replies": []
+          },
+          {
+            "_id": "reply_016",
+            "author": "user_003",
+            "details": "Also make sure to return inside handlers.",
+            "timestamp": "2025-04-01T12:44:00.000Z",
+            "replies": []
+          }
+        ]
+      }
+    ]
+  }
+,
+    {
+    "_id": "post_007",
+    "post_type": "QUESTION",
+    "is_private": false,
+    "is_anonymous": false,
+    "course": "course_500",
+    "author": "user_008",
+    "folder": "folder_07",
+    "summary": "Why is my Node.js server crashing?",
+    "details": "I'm seeing 'UnhandledPromiseRejectionWarning'. Any idea why?",
+    "timestamp": "2025-04-01T12:30:00.000Z",
+    "views": 78,
+    "follow_ups": [
+      {
+        "_id": "followup_010",
+        "author": "user_010",
+        "details": "You're probably not catching async errors using try/catch.",
+        "is_resolved": false,
+        "timestamp": "2025-04-01T12:40:00.000Z",
+        "replies": [
+          {
+            "_id": "reply_016",
+            "author": "user_008",
+            "details": "I'll add try/catch around async code.",
+            "timestamp": "2025-04-01T12:42:00.000Z",
+            "replies": []
+          },
+          {
+            "_id": "reply_017",
+            "author": "user_003",
+            "details": "Also make sure to return inside handlers.",
+            "timestamp": "2025-04-01T12:44:00.000Z",
+            "replies": []
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -11,28 +11,11 @@ import {
   FormCheck,
 } from "react-bootstrap";
 import "./posts.scss";
-import {
-  BtnBold,
-  BtnBulletList,
-  BtnClearFormatting,
-  BtnItalic,
-  BtnLink,
-  BtnNumberedList,
-  BtnRedo,
-  BtnStrikeThrough,
-  BtnUnderline,
-  BtnUndo,
-  Editor,
-  EditorProvider,
-  Toolbar,
-  createButton,
-} from "react-simple-wysiwyg";
 import { useDispatch, useSelector } from "react-redux";
 import { storeType } from "@/src/app/Pazza/store";
 import type { Posts } from "../../DataStructure";
 import { setPosts } from "../../reducer";
-import { FaRegComment } from "react-icons/fa6";
-import { divide } from "@/src/app/Labs/Lab3/Math";
+import { FaRegComment, FaUser } from "react-icons/fa6";
 import { TbLetterISmall, TbLetterS } from "react-icons/tb";
 import CustomEditor from "./CustomEditor";
 import { HiOutlineReply } from "react-icons/hi";
@@ -50,7 +33,7 @@ export default function Posts() {
   const [replyBoxMap, setReplyBoxMap] = useState<Record<string, boolean>>({});
   const [replyBoxMap2, setReplyBoxMap2] = useState<Record<string, boolean>>({});
   const isQuestion = post?.post_type === "QUESTION" || "POLL";
-  
+
   //Screen load
   useEffect(() => {
     const post = posts.find((p) => p._id === pid);
@@ -64,6 +47,7 @@ export default function Posts() {
     //client call to get views of a post
     return null;
   };
+  const submitAnswer = () => {};
   const toggleResolved = () => {};
   const views = getViewsOfPost();
   const onUpdatePost = () => {
@@ -73,7 +57,9 @@ export default function Posts() {
   return (
     <div className="post-screen-wrapper">
       <div className="d-flex justify-content-between align-items-center question-views-wrapper">
-        <div className="qv-container">{post?.post_type} @ {pid} </div>{" "}
+        <div className="qv-container">
+          {post?.post_type} @ {pid}{" "}
+        </div>{" "}
         <div className="d-flex">
           {" "}
           <div className="qv-container">Views : {views}</div>
@@ -90,12 +76,15 @@ export default function Posts() {
       </div>
 
       <div>
-        <h6 id="posts-author">Updated by {post?.author}</h6>
+        <h6 id="posts-author">
+          Updated by {post?.author} on{" "}
+          <span className="timestamp"> {post?.timestamp?.slice(0, 10)}</span>
+        </h6>
       </div>
 
       <hr />
 
-      {!showEdit && <div className="posts-title">{post?.summary}</div>}
+      {!showEdit && <div className="posts-title">{post?.summary} </div>}
       {showEdit && (
         <div className="editor-wrapper mb-5">
           <CustomEditor post={post} content="summary" />
@@ -133,7 +122,7 @@ export default function Posts() {
         )}
       </div>
       <hr />
-      {isQuestion &&  (
+      {isQuestion && (
         <>
           <div className="student-answer">
             <h5>
@@ -143,6 +132,15 @@ export default function Posts() {
             {post?.answer?.map((a) => {
               return a.author.includes("student") ? (
                 <div key={a._id} className="ms-5">
+                  <div className="d-flex">
+                    <h6 className="me-2">
+                      <FaUser />
+                      {a.author}
+                    </h6>{" "}
+                    <span className="timestamp">
+                      Updated {a.timestamp.slice(0, 10)}
+                    </span>
+                  </div>
                   {a.details} <br />
                 </div>
               ) : null;
@@ -150,6 +148,22 @@ export default function Posts() {
             {!post?.answer && (
               <div>
                 <CustomEditor />
+                <Button
+                  className="mt-2 bg-success"
+                  onClick={() => submitAnswer()}
+                >
+                  Submit
+                </Button>
+                <Button
+                  className="ms-2 mt-2"
+                  onClick={() =>
+                    setPost((prev) =>
+                      prev ? { ...prev, answer: undefined } : prev
+                    )
+                  }
+                >
+                  Cancel
+                </Button>
               </div>
             )}
           </div>
@@ -161,6 +175,14 @@ export default function Posts() {
             {post?.answer?.map((a) => {
               return a.author.includes("instructor") ? (
                 <div key={a._id} className="ms-5">
+                  <div className="d-flex">
+                    <h6 className="me-2">
+                      <FaUser /> {a.author}
+                    </h6>{" "}
+                    <span className="timestamp">
+                      Updated {a.timestamp.slice(0, 10)}
+                    </span>
+                  </div>
                   {a.details} <br />
                 </div>
               ) : null;
@@ -168,6 +190,22 @@ export default function Posts() {
             {!post?.answer && (
               <div>
                 <CustomEditor />
+                <Button
+                  className="mt-2 bg-warning"
+                  onClick={() => submitAnswer()}
+                >
+                  Submit
+                </Button>
+                <Button
+                  className="ms-2 mt-2"
+                  onClick={() =>
+                    setPost((prev) =>
+                      prev ? { ...prev, answer: undefined } : prev
+                    )
+                  }
+                >
+                  Cancel
+                </Button>
               </div>
             )}
           </div>
@@ -200,9 +238,14 @@ export default function Posts() {
                   }
                 ></FormCheck>
                 <div className="d-flex">
-                  <h4>{followup.author}</h4>
+                  <h4>
+                    <FaUser />
+                    {followup.author}
+                  </h4>
                   <h6 className="ms-2">
-                    {followup.timestamp?.slice(0, 10)}
+                    <span className="timestamp">
+                      Updated {followup.timestamp?.slice(0, 10)}
+                    </span>
                   </h6>{" "}
                 </div>
                 <h5>
@@ -246,7 +289,15 @@ export default function Posts() {
                   const showReplyBox = replyBoxMap2[key] ?? false;
                   return (
                     <div key={reply._id} className="reply-item">
-                      <h6>{reply.author}</h6>
+                      <div className="d-flex">
+                        <h6 className="me-2">
+                          <FaUser />
+                          {reply.author}
+                        </h6>{" "}
+                        <span className="timestamp">
+                          Updated {reply.timestamp?.slice(0, 10)}
+                        </span>
+                      </div>
                       {reply.details}
                       <br />{" "}
                       <Button
