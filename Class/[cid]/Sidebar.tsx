@@ -17,6 +17,8 @@ import { useParams, usePathname } from "next/navigation";
 import { GoTriangleDown } from "react-icons/go";
 import { PiStudentBold } from "react-icons/pi";
 import { FaChalkboardTeacher } from "react-icons/fa";
+import { storeType } from "../../store";
+import { useSelector } from "react-redux";
 
 export default function Sidebar() {
   const [togglePostsToday, setTogglePostsToday] = useState(true);
@@ -25,6 +27,7 @@ export default function Sidebar() {
   const [togglePostsDateWeek, setTogglePostsDateWeek] = useState(true);
   const { cid, pid } = useParams();
   const pathname = usePathname();
+  const posts = useSelector((state: storeType) => state.classReducer.posts);
 
   return (
     <div className="sidebar-wrapper">
@@ -54,36 +57,36 @@ export default function Sidebar() {
               </span>{" "}
               {togglePostsToday && (
                 <ListGroup>
-                  <Link
-                    href={`/Pazza/Class/${cid}/Posts/123`}
-                    className="post-link"
-                  >
-                    <ListGroupItem
-                      className={`post-item  ${
-                        pathname.includes("123") ? " bg-primary-subtle" : ""
-                      }`}
-                    >
-                      <div className="post-time float-end">Time</div>
-                      <div className="posts-title">
-                        <span className="border border-1 border-dark rounded">
-                          <FaChalkboardTeacher className="me-1" />
-                          Instr
-                        </span>{" "}
-                        Post Title 1
+                  {posts.map((post) => {
+                    return (
+                      <div key={post._id}>
+                        <Link 
+                          href={`/Pazza/Class/${cid}/Posts/${post._id}`}
+                          className="post-link"
+                        >
+                          <ListGroupItem
+                            className={`post-item  ${
+                              pathname.includes(`${post._id}`)
+                                ? " bg-primary-subtle"
+                                : ""
+                            }`}
+                          >
+                            <div className="post-time float-end">{post.timestamp.slice(0,10)}</div>
+                            <div className="posts-title">
+                              <span className="border border-1 border-dark rounded">
+                                <FaChalkboardTeacher className="me-1" />
+                                Instr
+                              </span>{" "}
+                              {post.summary}
+                            </div>
+                            <div className="posts-description">
+                              {post.details}
+                            </div>
+                          </ListGroupItem>
+                        </Link>
                       </div>
-                      <div className="posts-description">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat. Duis aute irure dolor in
-                        reprehenderit in voluptate velit esse cillum dolore eu
-                        fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit
-                        anim id est laborum
-                      </div>
-                    </ListGroupItem>
-                  </Link>
+                    );
+                  })}
                 </ListGroup>
               )}
             </ListGroupItem>

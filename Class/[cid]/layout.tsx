@@ -4,7 +4,7 @@ import FolderFilter from "./FolderFilter";
 import Sidebar from "./Sidebar";
 import "./layout.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { storeType } from "../../store";
 import { toggleSidebar } from "./reducer";
 import { VscTriangleLeft, VscTriangleRight } from "react-icons/vsc";
 
@@ -13,7 +13,7 @@ export default function ClassLayout({
 }: Readonly<{ children: ReactNode }>) {
   const dispatch = useDispatch();
   const showSidebar = useSelector(
-    (state: RootState) => state.classReducer.showSidebar
+    (state: storeType) => state.classReducer.showSidebar
   );
   const handleSidebar = () => {
     dispatch(toggleSidebar(!showSidebar));
