@@ -1,13 +1,21 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Editor from 'react-simple-wysiwyg';
-import { Container, Form, Button, Badge, Alert, Row, Col } from 'react-bootstrap';
-import { FaPlusCircle } from 'react-icons/fa';
-import { IoArrowBackOutline } from 'react-icons/io5';
-import filterData from '../../../../(Kambaz)/Database/filterData.json';
-import type { RootState } from '../../../store';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Editor from "react-simple-wysiwyg";
+import {
+  Container,
+  Form,
+  Button,
+  Badge,
+  Alert,
+  Row,
+  Col,
+} from "react-bootstrap";
+import { FaPlusCircle } from "react-icons/fa";
+import { IoArrowBackOutline } from "react-icons/io5";
+import filterData from "../../../../(Kambaz)/Database/filterData.json";
+import type { storeType } from "../../../store";
 import {
   setPostType,
   setPostTo,
@@ -20,16 +28,15 @@ import {
   clearFieldError,
   addPost,
   resetForm,
-} from './reducer';
+} from "./reducer";
 
-
-type PostType = 'question' | 'note' | 'poll';
-type PostTo = 'entire-class' | 'individual';
+type PostType = "question" | "note" | "poll";
+type PostTo = "entire-class" | "individual";
 
 interface User {
   id: string;
   name: string;
-  type: 'instructor' | 'student';
+  type: "instructor" | "student";
 }
 
 interface Folder {
@@ -39,30 +46,32 @@ interface Folder {
 
 export default function NewPostScreen() {
   const dispatch = useDispatch();
-  const { formData, errors } = useSelector((state: RootState) => state.newPostReducer);
+  const { formData, errors } = useSelector(
+    (state: storeType) => state.newPostReducer
+  );
 
   const users: User[] = [
-    { id: 'instructor1', name: 'Instructor 1', type: 'instructor' },
-    { id: 'instructor2', name: 'Instructor 2', type: 'instructor' },
-    { id: 'student1', name: 'Student 1', type: 'student' },
-    { id: 'student2', name: 'Student 2', type: 'student' },
-    { id: 'student3', name: 'Student 3', type: 'student' },
+    { id: "instructor1", name: "Instructor 1", type: "instructor" },
+    { id: "instructor2", name: "Instructor 2", type: "instructor" },
+    { id: "student1", name: "Student 1", type: "student" },
+    { id: "student2", name: "Student 2", type: "student" },
+    { id: "student3", name: "Student 3", type: "student" },
   ];
 
-  const instructors = users.filter(u => u.type === 'instructor');
+  const instructors = users.filter((u) => u.type === "instructor");
   const allUsers = users;
 
-  const folders: Folder[] = (filterData as Array<{ label: string; count?: number }>).map(
-    (item) => ({
-      id: item.label,
-      name: item.label,
-    })
-  );
+  const folders: Folder[] = (
+    filterData as Array<{ label: string; count?: number }>
+  ).map((item) => ({
+    id: item.label,
+    name: item.label,
+  }));
 
   const handleFolderToggle = (folderId: string) => {
     dispatch(toggleSelectedFolder(folderId));
     if (errors.folders && formData.selectedFolders.length > 0) {
-      dispatch(clearFieldError('folders'));
+      dispatch(clearFieldError("folders"));
     }
   };
 
@@ -85,15 +94,15 @@ export default function NewPostScreen() {
     const newErrors: typeof errors = {};
 
     if (formData.selectedFolders.length === 0) {
-      newErrors.folders = 'At least one folder is required';
+      newErrors.folders = "At least one folder is required";
     }
 
     if (!formData.summary.trim()) {
-      newErrors.summary = 'Summary is required';
+      newErrors.summary = "Summary is required";
     }
 
     if (!formData.details.trim()) {
-      newErrors.details = 'Details is required';
+      newErrors.details = "Details is required";
     }
 
     dispatch(setErrors(newErrors));
@@ -109,7 +118,8 @@ export default function NewPostScreen() {
       id: Date.now().toString(),
       postType: formData.postType as PostType,
       postTo: formData.postTo as PostTo,
-      selectedUsers: formData.postTo === 'individual' ? formData.selectedUsers : [],
+      selectedUsers:
+        formData.postTo === "individual" ? formData.selectedUsers : [],
       selectedFolders: formData.selectedFolders,
       summary: formData.summary,
       details: formData.details,
@@ -120,15 +130,14 @@ export default function NewPostScreen() {
     dispatch(resetForm());
   };
 
-
   const handleCancel = () => {
     dispatch(resetForm());
   };
 
   const getPostButtonText = () => {
-    if (formData.postType === 'question') return 'Post My Question';
-    if (formData.postType === 'note') return 'Post My Note';
-    return 'Post';
+    if (formData.postType === "question") return "Post My Question";
+    if (formData.postType === "note") return "Post My Note";
+    return "Post";
   };
 
   return (
@@ -153,8 +162,10 @@ export default function NewPostScreen() {
                 id="postType-question"
                 name="postType"
                 value="question"
-                checked={formData.postType === 'question'}
-                onChange={(e) => dispatch(setPostType(e.target.value as PostType))}
+                checked={formData.postType === "question"}
+                onChange={(e) =>
+                  dispatch(setPostType(e.target.value as PostType))
+                }
                 label={
                   <div>
                     <strong>Question</strong> <br />
@@ -167,12 +178,16 @@ export default function NewPostScreen() {
                 id="postType-note"
                 name="postType"
                 value="note"
-                checked={formData.postType === 'note'}
-                onChange={(e) => dispatch(setPostType(e.target.value as PostType))}
+                checked={formData.postType === "note"}
+                onChange={(e) =>
+                  dispatch(setPostType(e.target.value as PostType))
+                }
                 label={
                   <div>
                     <strong>Note</strong> <br />
-                    <span className="text-muted">if you don't need an answer</span>
+                    <span className="text-muted">
+                      if you don't need an answer
+                    </span>
                   </div>
                 }
               />
@@ -181,8 +196,10 @@ export default function NewPostScreen() {
                 id="postType-poll"
                 name="postType"
                 value="poll"
-                checked={formData.postType === 'poll'}
-                onChange={(e) => dispatch(setPostType(e.target.value as PostType))}
+                checked={formData.postType === "poll"}
+                onChange={(e) =>
+                  dispatch(setPostType(e.target.value as PostType))
+                }
                 label={
                   <div>
                     <strong>Poll/In-Class Response</strong> <br />
@@ -210,7 +227,7 @@ export default function NewPostScreen() {
                 name="postTo"
                 value="entire-class"
                 label="Entire Class"
-                checked={formData.postTo === 'entire-class'}
+                checked={formData.postTo === "entire-class"}
                 onChange={(e) => dispatch(setPostTo(e.target.value as PostTo))}
               />
               <Form.Check
@@ -219,16 +236,18 @@ export default function NewPostScreen() {
                 name="postTo"
                 value="instructor"
                 label="Instructor(s)"
-                checked={formData.postTo === 'individual'}
+                checked={formData.postTo === "individual"}
                 onChange={(e) => dispatch(setPostTo(e.target.value as PostTo))}
               />
               {/* User Selection Control */}
-              {formData.postTo === 'individual' && (
+              {formData.postTo === "individual" && (
                 <div className="ms-3 border rounded p-2 bg-light mt-2">
                   <div className="mb-2">
-                    <Form.Label className="fw-medium small">Instructors</Form.Label>
+                    <Form.Label className="fw-medium small">
+                      Instructors
+                    </Form.Label>
                     <div className="d-flex flex-row gap-1">
-                      {instructors.map(user => (
+                      {instructors.map((user) => (
                         <Form.Check
                           key={user.id}
                           type="checkbox"
@@ -241,9 +260,11 @@ export default function NewPostScreen() {
                     </div>
                   </div>
                   <div>
-                    <Form.Label className="fw-medium small">All Users</Form.Label>
+                    <Form.Label className="fw-medium small">
+                      All Users
+                    </Form.Label>
                     <div className="d-flex flex-row gap-1">
-                      {allUsers.map(user => (
+                      {allUsers.map((user) => (
                         <Form.Check
                           key={user.id}
                           type="checkbox"
@@ -271,12 +292,16 @@ export default function NewPostScreen() {
         <Col xs={12} md={8}>
           <Form.Group>
             <div className="d-flex flex-wrap gap-2 mb-2">
-              {folders.map(folder => (
+              {folders.map((folder) => (
                 <Badge
                   key={folder.id}
                   as="button"
                   type="button"
-                  bg={formData.selectedFolders.includes(folder.id) ? 'primary' : 'secondary'}
+                  bg={
+                    formData.selectedFolders.includes(folder.id)
+                      ? "primary"
+                      : "secondary"
+                  }
                   onClick={() => handleFolderToggle(folder.id)}
                   className="border-0"
                 >
@@ -296,7 +321,7 @@ export default function NewPostScreen() {
                 onClick={(e) => {
                   e.preventDefault();
                   // TODO: Navigate to Manage Folders
-                  console.log('Navigate to Manage Folders');
+                  console.log("Navigate to Manage Folders");
                 }}
               >
                 Manage and reorder folders
@@ -324,7 +349,9 @@ export default function NewPostScreen() {
             />
             <div className="d-flex justify-content-between align-items-center mt-1">
               {errors.summary && (
-                <Form.Text className="text-danger small">{errors.summary}</Form.Text>
+                <Form.Text className="text-danger small">
+                  {errors.summary}
+                </Form.Text>
               )}
               <Form.Text className="text-muted ms-auto small">
                 {formData.summary.length}/100
@@ -342,11 +369,14 @@ export default function NewPostScreen() {
         </Col>
         <Col xs={12} md={8}>
           <Form.Group>
-            <div className={errors.details ? 'border border-danger rounded' : 'border rounded'}>
-              <Editor
-                value={formData.details}
-                onChange={handleDetailsChange}
-              />
+            <div
+              className={
+                errors.details
+                  ? "border border-danger rounded"
+                  : "border rounded"
+              }
+            >
+              <Editor value={formData.details} onChange={handleDetailsChange} />
             </div>
             {errors.details && (
               <Form.Text className="text-danger d-block mt-1 small">
@@ -368,11 +398,14 @@ export default function NewPostScreen() {
               id="sendEmailNotifications"
               label={
                 <small>
-                  Send email notifications immediately (bypassing students' email preferences, if necessary)
+                  Send email notifications immediately (bypassing students'
+                  email preferences, if necessary)
                 </small>
               }
               checked={formData.sendEmailNotifications}
-              onChange={(e) => dispatch(setSendEmailNotifications(e.target.checked))}
+              onChange={(e) =>
+                dispatch(setSendEmailNotifications(e.target.checked))
+              }
             />
           </Form.Group>
         </Col>
@@ -394,11 +427,7 @@ export default function NewPostScreen() {
 
       {/* Action Buttons */}
       <div className="d-flex gap-3">
-        <Button
-          variant="primary"
-          onClick={handlePost}
-          type="button"
-        >
+        <Button variant="primary" onClick={handlePost} type="button">
           {getPostButtonText()}
         </Button>
         <Button

@@ -4,7 +4,9 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { storeType } from "../../../store";
 import { setSelectedIndex } from "./reducer";
-import "../../app/styles.css";
+
+import "./page.scss";
+
 export default function FilterBar() {
   const items = useSelector((state: storeType) => state.filter.items);
   const selectedIndex = useSelector(
@@ -14,8 +16,7 @@ export default function FilterBar() {
 
   return (
     <div
-      id="pazza-main"
-      className="flex items-center gap-3 bg-[#1a4d7a] overflow-x-auto"
+      className="flex items-center gap-3 bg-[#1a4d7a] overflow-x-auto pazza-folder-bar"
     >
       {items.map((item: any, index: number) => (
         <div
