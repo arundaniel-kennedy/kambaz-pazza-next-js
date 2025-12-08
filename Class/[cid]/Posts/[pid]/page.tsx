@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 import "./posts.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { storeType } from "@/src/app/Pazza/store";
+import { storeType } from "../../../../store";
 import type { Posts } from "../../DataStructure";
 import { setPosts } from "../../reducer";
 import { FaRegComment, FaUser } from "react-icons/fa6";

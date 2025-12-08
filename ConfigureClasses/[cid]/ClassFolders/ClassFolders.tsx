@@ -31,7 +31,7 @@ export default function ClassFolders() {
     dispatch(updateFolderSettings({ ...folders_settings, folders: folders }));
   };
   const createNewFolder = async () => {
-    let folders = [];
+    const folders = [];
     if (suffix) {
       for (let i = suffixStart; i <= suffixEnd; i++) {
         folders.push(prefix + "" + i);
@@ -44,7 +44,7 @@ export default function ClassFolders() {
       if (addedFolders.message.message.includes("duplicate key error"))
         alert(`Entered folder name(s) already present under course ${cid}`);
     } else {
-      let updatedFolders = JSON.parse(
+      const updatedFolders = JSON.parse(
         JSON.stringify(folders_settings?.folders)
       );
       dispatch(
