@@ -20,20 +20,18 @@ export default function CustomEditor({
         <Editor
           containerProps={{ style: { resize: "vertical" } }}
           value={`${post?.summary}`}
-          
         />
       )}
       {content === "details" && (
         <Editor
           containerProps={{ style: { resize: "vertical" } }}
           value={`${post?.details}`}
-          
         />
       )}
       {!content && (
         <Editor
           containerProps={{ style: { resize: "vertical" } }}
-          onChange={(e) =>
+          onChange={(e: any) =>
             dispatch(setPosts({ ...post, answer: e.target.value }))
           }
         />

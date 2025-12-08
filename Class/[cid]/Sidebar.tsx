@@ -46,10 +46,12 @@ export default function Sidebar() {
     <div className="sidebar-wrapper">
       {/* Sidebar Buttons */}
       <div className="sidebar-buttons ">
-        <Button className="new-post-button" href={`/Pazza/Class/${cid}/Create`}>
-          <CiCirclePlus />
-          New Post
-        </Button>
+        <Link href={`/Pazza/Class/${cid}/Create`} className="text-decoration-none">
+          <Button className="new-post-button w-100">
+            <CiCirclePlus />
+            <span className="ms-2 text-white">New Post</span>
+          </Button>
+        </Link>
         <div className="search-icon fs-4">
           <CiSearch />
         </div>
