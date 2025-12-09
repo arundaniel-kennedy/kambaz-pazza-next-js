@@ -5,7 +5,7 @@ const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
 const PAZZA_API = `${HTTP_SERVER}/api/pazza`;
-const POSTS_API = `/${PAZZA_API}/posts`;
+const POSTS_API = `${PAZZA_API}/posts`;
 
 //All Post APIs
 // ******************************
@@ -18,7 +18,7 @@ const POSTS_API = `/${PAZZA_API}/posts`;
 //(Arth)
 export async function getAllPostsForCourse(courseId: string) {
   const posts = await axios.get(`${PAZZA_API}/${courseId}/posts`);
-  return posts;
+  return posts.data;
 }
 
 export async function getPost(postId: string) {
