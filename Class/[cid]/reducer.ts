@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { posts } from "../../data"
+import { posts } from "../../data";
 
 const initialState = {
   posts: posts,
@@ -10,14 +10,17 @@ const classSlice = createSlice({
   name: "class",
   initialState,
   reducers: {
+    // ******************************
+    //ashwin reducers go here
+
+    // ******************************
+    //arth reducers go here
     setPosts: (state, { payload: posts }) => {
       state.posts = posts;
     },
 
     updatePost: (state, { payload: post }) => {
-      state.posts = state.posts.map((p) =>
-        p._id === post._id ? post : p
-      )
+      state.posts = state.posts.map((p) => (p._id === post._id ? post : p));
     },
 
     addPost: (state, { payload: post }) => {
@@ -40,4 +43,3 @@ export default classSlice.reducer;
 function uuidv4() {
   throw new Error("Function not implemented.");
 }
-
