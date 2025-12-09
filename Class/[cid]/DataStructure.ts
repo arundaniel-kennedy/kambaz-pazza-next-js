@@ -13,7 +13,7 @@ export type Posts = {
   views?: number;
   answer?: Answer[];
 };
-type FollowUp = {
+export type FollowUp = {
   _id?: string;
   author?: string;
   details?: string;
@@ -21,7 +21,7 @@ type FollowUp = {
   timestamp?: string;
   replies?: Replies[];
 };
-type Replies = {
+export type Replies = {
   _id?: string;
   author?: string;
   details?: string;
@@ -29,7 +29,7 @@ type Replies = {
   replies?: Replies[];
 };
 
-type Answer = {
+export type Answer = {
   _id: string;
   author: string;
   details: string;
