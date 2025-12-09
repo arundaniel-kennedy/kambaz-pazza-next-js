@@ -38,7 +38,7 @@ export async function readPost(postId: string) {
   return response;
 }
 
-export async function editPost(postId: string, postUpdates: Posts) {
+export async function editPost(postId: string|undefined, postUpdates: Posts) {
   const updatedPost = await axiosWithCredentials.put(
     `${POSTS_API}/${postId}`,
     postUpdates

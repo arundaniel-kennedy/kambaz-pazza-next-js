@@ -12,47 +12,70 @@ import {
 } from "react-bootstrap";
 import "./posts.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { storeType } from "../../../../store";
+
 import type { Posts } from "../../DataStructure";
-import { setPosts } from "../../reducer";
+import { setPost } from "../../reducer";
 import { FaRegComment, FaUser } from "react-icons/fa6";
 import { TbLetterISmall, TbLetterS } from "react-icons/tb";
 import CustomEditor from "./CustomEditor";
 import { HiOutlineReply } from "react-icons/hi";
-
+import * as client from "../../client";
+import { storeType } from "@/app/Pazza/store";
+import { RootState } from "@/app/(Kambaz)/store";
 export default function Posts() {
   //All const declarations
 
   const [showEdit, setShowEdit] = useState(false);
   const { cid, pid } = useParams();
-  const posts = useSelector((state: storeType) => state.classReducer.posts);
-  const [post, setPost] = useState<Posts | undefined>({});
+  const post = useSelector(
+    (state: storeType) => state.classConfigureReducer as Posts | undefined
+  );
   const dispatch = useDispatch();
-  const [html, setHtml] = useState("<b>HTML</b>");
   const [isResolvedMap, setResolvedMap] = useState<Record<string, boolean>>({});
   const [replyBoxMap, setReplyBoxMap] = useState<Record<string, boolean>>({});
   const [replyBoxMap2, setReplyBoxMap2] = useState<Record<string, boolean>>({});
-  const isQuestion = post?.post_type === "QUESTION" || "POLL";
-
+  const isQuestion = post
+    ? post.post_type === "QUESTION" || post.post_type === "POLL"
+    : false;
+  const currentUser = useSelector(
+    (state: RootState) => state.accountReducer.currentUser
+  );
+  const isInstr = currentUser?.role === "FACULTY";
+  const authorId =
+    typeof post?.author === "string"
+      ? post.author
+      : post?.author && typeof post.author === "object" && "_id" in post.author
+      ? (post.author as { _id?: string })._id
+      : undefined;
   //Screen load
   useEffect(() => {
-    const post = posts.find((p) => p._id === pid);
-    setPost(post);
-    getViewsOfPost();
+    async function fetchPost() {
+      const post = await client.getPost(cid as string);
+      dispatch(setPost(post as Posts));
+    }
+    fetchPost();
   }, []);
 
   //All functions
   const editPost = () => setShowEdit(!showEdit);
-  const getViewsOfPost = () => {
-    //client call to get views of a post
-    return null;
-  };
+
   const submitAnswer = () => {};
+
+  const editAnswer = () => {};
+
+  const createFollowup = () => {};
+
+  const createReplyToFollowup = () => {};
+
+  const createReplyToReply = () => {};
+
   const toggleResolved = () => {};
-  const views = getViewsOfPost();
-  const onUpdatePost = () => {
-    //call client update here
-    dispatch(setPosts({ post }));
+
+  const views = post?.read_by?.length;
+
+  const onUpdatePost = async (postUpdates: Posts) => {
+    const updatedPost = await client.editPost(post?._id, postUpdates);
+    dispatch(setPost(updatedPost as Posts));
   };
   return (
     <div className="post-screen-wrapper">
@@ -96,7 +119,7 @@ export default function Posts() {
       <hr />
       <div className="d-flex">
         <div className="folder-name">Folder Name</div>
-        {!showEdit && (
+        {!showEdit &&(isInstr || authorId === currentUser?._id)&& (
           <Button className="edit-button " onClick={() => editPost()}>
             Edit
           </Button>
@@ -106,8 +129,10 @@ export default function Posts() {
             <Button
               className="ms-3 edit-button "
               onClick={() => {
-                onUpdatePost();
-                editPost();
+                if (post) {
+                  onUpdatePost(post);
+                  editPost();
+                }
               }}
             >
               Submit
@@ -154,14 +179,7 @@ export default function Posts() {
                 >
                   Submit
                 </Button>
-                <Button
-                  className="ms-2 mt-2"
-                  onClick={() =>
-                    setPost((prev) =>
-                      prev ? { ...prev, answer: undefined } : prev
-                    )
-                  }
-                >
+                <Button className="ms-2 mt-2" onClick={() => submitAnswer()}>
                   Cancel
                 </Button>
               </div>
@@ -196,14 +214,7 @@ export default function Posts() {
                 >
                   Submit
                 </Button>
-                <Button
-                  className="ms-2 mt-2"
-                  onClick={() =>
-                    setPost((prev) =>
-                      prev ? { ...prev, answer: undefined } : prev
-                    )
-                  }
-                >
+                <Button className="ms-2 mt-2" onClick={() => submitAnswer()}>
                   Cancel
                 </Button>
               </div>

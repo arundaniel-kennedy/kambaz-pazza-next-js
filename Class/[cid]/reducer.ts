@@ -50,6 +50,6 @@ const classSlice = createSlice({
     
   },
 });
-export const { getPostsFromClass, toggleSidebar, setPosts, addPost } =
+export const { getPostsFromClass, toggleSidebar, setPosts, addPost,setPost} =
   classSlice.actions;
 export default classSlice.reducer;

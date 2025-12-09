@@ -12,6 +12,7 @@ export type Posts = {
   timestamp?: string;
   views?: number;
   answer?: Answer[];
+  read_by?:string[];
 };
 export type FollowUp = {
   _id?: string;

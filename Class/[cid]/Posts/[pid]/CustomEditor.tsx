@@ -1,6 +1,6 @@
 import React from "react";
 import Editor from "react-simple-wysiwyg";
-import { setPosts } from "../../reducer";
+import { setPost } from "../../reducer";
 import { Posts } from "../../DataStructure";
 import { useDispatch } from "react-redux";
 
@@ -18,21 +18,24 @@ export default function CustomEditor({
       {" "}
       {content === "summary" && (
         <Editor
-          containerProps={{ style: { resize: "vertical" } }}
           value={`${post?.summary}`}
+          onChange={(e) => {
+            dispatch(setPost({ ...post, summary: e.target.value }));
+          }}
         />
       )}
       {content === "details" && (
         <Editor
-          containerProps={{ style: { resize: "vertical" } }}
           value={`${post?.details}`}
+          onChange={(e) => {
+            dispatch(setPost({ ...post, details: e.target.value }));
+          }}
         />
       )}
       {!content && (
         <Editor
-          containerProps={{ style: { resize: "vertical" } }}
           onChange={(e: any) =>
-            dispatch(setPosts({ ...post, answer: e.target.value }))
+            dispatch(setPost({ ...post, answer: e.target.value }))
           }
         />
       )}
