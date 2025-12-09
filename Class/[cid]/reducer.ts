@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { posts } from "../../data";
-
+import { Posts } from "./DataStructure";
+import { v4 as uuidv4 } from "uuid";
 const initialState = {
-  posts: posts,
+  posts: [] as Posts[],
   showSidebar: true,
+  post: {} as Posts | undefined,
 };
 
 const classSlice = createSlice({
@@ -12,6 +13,14 @@ const classSlice = createSlice({
   reducers: {
     // ******************************
     //ashwin reducers go here
+
+
+// ******************************
+    //Arun reducers go here
+    //edit answer
+    //create folloup
+    //create reply to followup
+    //create reply to reply
 
     // ******************************
     //arth reducers go here
@@ -29,17 +38,18 @@ const classSlice = createSlice({
     },
 
     getPostsFromClass: (state, { payload: courseId }) => {
-      state.posts = posts.filter((p) => p.course === courseId);
+      state.posts = state.posts.filter((p) => p.course === courseId);
     },
 
     toggleSidebar: (state, action) => {
       state.showSidebar = action.payload;
     },
+    setPost: (state, { payload: postId }) => {
+      state.post = state.posts.find((p) => p._id === postId);
+    },
+    
   },
 });
 export const { getPostsFromClass, toggleSidebar, setPosts, addPost } =
   classSlice.actions;
 export default classSlice.reducer;
-function uuidv4() {
-  throw new Error("Function not implemented.");
-}
