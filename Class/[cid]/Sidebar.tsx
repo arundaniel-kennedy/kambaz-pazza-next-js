@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./sidebar.scss";
 import {
   Button,
@@ -18,44 +18,47 @@ import { GoTriangleDown } from "react-icons/go";
 import { PiStudentBold } from "react-icons/pi";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { storeType } from "../../store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setPosts } from "./reducer";
 
+import * as client from "./client";
 
 export default function Sidebar() {
   const [togglePostsToday, setTogglePostsToday] = useState(true);
   const [togglePostsYesterday, setTogglePostsYesterday] = useState(true);
+  const [togglePostsThisWeek, setTogglePostsThisWeek] = useState(true);
   const [togglePostsLastWeek, setTogglePostsLastWeek] = useState(true);
   const [togglePostsDateWeek, setTogglePostsDateWeek] = useState(true);
   const { cid, pid } = useParams();
   const pathname = usePathname();
+  const dispatch = useDispatch();
   const posts = useSelector((state: storeType) => state.classReducer.posts);
-  
-  const getYesterdayPosts = () => {
-    //client call to get yesterday posts
+  console.log(">>>>", posts);
+
+  const getAllPosts = async () => {
+    const posts = await client.getAllPostsForCourse(cid as string);
+    dispatch(setPosts(posts));
   };
-  const getTodayPosts = () => {
-    //client call to dget today posts
-  };
-  const getWeekWisePosts = () => {
-    //client calll to get week wise posts
-  };
-  const yesterdayPosts = getYesterdayPosts();
-  const todayPosts = getTodayPosts();
-  const weekWisePosts = getWeekWisePosts();
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
   return (
     <div className="sidebar-wrapper">
       {/* Sidebar Buttons */}
       <div className="sidebar-buttons ">
-        <Link href={`/Pazza/Class/${cid}/Create`} className="text-decoration-none">
-          <Button className="new-post-button w-100">
-            <CiCirclePlus />
-            <span className="ms-2 text-white">New Post</span>
-          </Button>
+        <Link
+          href={`/Pazza/Class/${cid}/Create`}
+          className="new-post-button btn btn-pimary"
+        >
+          <CiCirclePlus />
+          <span className="ms-2 text-white">New Post</span>
         </Link>
-        <div className="search-icon fs-4">
-          <CiSearch />
+        <div className="search-input">
+          <CiSearch className="search-icon" />
+          <FormControl className="search-bar" placeholder="Search posts..." />
         </div>
-        <FormControl className="search-bar" placeholder="Search posts..." />
       </div>
       <div className="posts-feed">
         {/* All Posts */}
@@ -87,10 +90,10 @@ export default function Sidebar() {
                             }`}
                           >
                             <div className="post-time float-end">
-                              {post.timestamp.slice(0, 10)}
+                              {(post.timestamp ?? "").slice(0, 10)}
                             </div>
                             <div className="posts-title">
-                              {post.author.includes("instructor") && (
+                              {(post.author ?? "").includes("instructor") && (
                                 <>
                                   <span className="border border-1 border-dark rounded">
                                     <FaChalkboardTeacher className="me-1" />
@@ -98,7 +101,7 @@ export default function Sidebar() {
                                   </span>{" "}
                                 </>
                               )}
-                              {post.author.includes("student") && (
+                              {(post.author ?? "").includes("student") && (
                                 <>
                                   <span className="border border-1 border-dark rounded ">
                                     <PiStudentBold className="me-1" />
@@ -122,7 +125,7 @@ export default function Sidebar() {
             </ListGroupItem>
 
             {/* Yesterday Category */}
-            <ListGroupItem className="post-category-yesterday">
+            {/* <ListGroupItem className="post-category-yesterday">
               <span
                 className="post-yesterday-cursor"
                 onClick={() => setTogglePostsYesterday(!togglePostsYesterday)}
@@ -164,10 +167,10 @@ export default function Sidebar() {
                   </Link>
                 </ListGroup>
               )}
-            </ListGroupItem>
+            </ListGroupItem> */}
 
             {/* Last Week Category */}
-            <ListGroupItem className="post-category-yesterday">
+            {/* <ListGroupItem className="post-category-yesterday">
               <span
                 className="post-yesterday-cursor"
                 onClick={() => setTogglePostsLastWeek(!togglePostsLastWeek)}
@@ -209,10 +212,10 @@ export default function Sidebar() {
                   </Link>
                 </ListGroup>
               )}
-            </ListGroupItem>
+            </ListGroupItem> */}
 
             {/* Date Week Category */}
-            <ListGroupItem className="post-category-yesterday">
+            {/* <ListGroupItem className="post-category-yesterday">
               <span
                 className="post-yesterday-cursor"
                 onClick={() => setTogglePostsDateWeek(!togglePostsDateWeek)}
@@ -254,7 +257,7 @@ export default function Sidebar() {
                   </Link>
                 </ListGroup>
               )}
-            </ListGroupItem>
+            </ListGroupItem> */}
           </ListGroup>
         </div>
       </div>
