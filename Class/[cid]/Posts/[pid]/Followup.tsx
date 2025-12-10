@@ -12,198 +12,292 @@ import { setPost } from "../../reducer";
 import { FaRegComment, FaUser } from "react-icons/fa6";
 
 export default function Followup({ post }: { post: Posts }) {
-  const { cid, pid } = useParams();
-  const dispatch = useDispatch();
+    const { cid, pid } = useParams();
+    const dispatch = useDispatch();
 
-  const [isResolvedMap, setResolvedMap] = useState<Record<string, boolean>>({});
-  const [replyBoxMap, setReplyBoxMap] = useState<Record<string, boolean>>({});
-  const [replyBoxMap2, setReplyBoxMap2] = useState<Record<string, boolean>>({});
-  const [followupContent, setFollowupContent] = useState("");
-
-  const createFollowup = async () => {
-    const newFollowup = await client.createFollowupToPost(pid as string, {
-      details: followupContent,
-    });
-    setFollowupContent("");
-
-    dispatch(
-      setPost({
-        ...post,
-        follow_ups: [...(post?.follow_ups ?? []), newFollowup],
-      })
+    const [isResolvedMap, setResolvedMap] = useState<Record<string, boolean>>(
+        {}
     );
-    console.log("folloup", newFollowup);
-  };
-
-  const createReplyToFollowup = () => {};
-
-  const createReplyToReply = () => {};
-
-  const toggleResolved = () => {};
-
-  const updateFollowupResolved = (followup: FollowUp) => {
-    // TODO: add code to update backend
-
-    let followups = JSON.parse(JSON.stringify(post.follow_ups));
-    let updatedFollowups = followups.map((f: any) => {
-      if (f._id === followup._id) {
-        f.is_resolved = !followup.is_resolved;
-        return f;
-      } else {
-        return f;
-      }
-    });
-    dispatch(
-      setPost({
-        ...post,
-        follow_ups: updatedFollowups,
-      })
+    const [replyBoxMap, setReplyBoxMap] = useState<Record<string, boolean>>({});
+    const [replyBoxMap2, setReplyBoxMap2] = useState<Record<string, boolean>>(
+        {}
     );
-  };
+    const [followupContent, setFollowupContent] = useState("");
+    const [ReplyContent, setReplyContent] = useState("");
+    const createFollowup = async () => {
+        const newFollowup = await client.createFollowupToPost(pid as string, {
+            details: followupContent,
+        });
+        setFollowupContent("");
 
-  return (
-    <div className="followup">
-      {(post?.instructor_answer || post?.student_answer) && <Form />}
-      <h5>
-        <FaRegComment /> Follow Up Discussions
-      </h5>
-      <hr />
-      <div className="followup-lists">
-        {post?.follow_ups?.map((followup) => {
-          const key = String(followup._id);
-          const isResolved = isResolvedMap[key] ?? followup.is_resolved;
-          const showReplyBox = replyBoxMap[key] ?? false;
-          return (
-            <div key={key} className="followup-item">
-              <FormCheck
-                defaultChecked={followup.is_resolved}
-                type="switch"
-                label={followup.is_resolved ? "Resolved" : "Unresolved"}
-                onChange={() => updateFollowupResolved(followup)}
-              ></FormCheck>
-              <div className="d-flex">
-                <h4>
-                  <FaUser />
-                  {followup.author}
-                </h4>
-                <h6 className="ms-2">
-                  <span className="timestamp">
-                    Updated {followup.timestamp?.slice(0, 10)}
-                  </span>
-                </h6>{" "}
-              </div>
-              <h5>
-                {followup.details} <br />{" "}
-                <Button
-                  className="reply-button"
-                  onClick={() =>
-                    setReplyBoxMap((prev) => ({
-                      ...prev,
-                      [key]: !showReplyBox,
-                    }))
+        dispatch(
+            setPost({
+                ...post,
+                follow_ups: [...(post?.follow_ups ?? []), newFollowup],
+            })
+        );
+        console.log("folloup", newFollowup);
+    };
+
+    const submitReplyToFollowup = async (followupId: string) => {
+        const replyToFollowUp = await client.createReplyToFollowup(
+            pid as string,
+            followupId,
+            { details: ReplyContent }
+        );
+        setReplyContent("");
+        const updatedFollowups = post?.follow_ups?.map((f) =>
+            f._id === followupId
+                ? {
+                      ...f,
+                      replies: [...(f.replies ?? []), replyToFollowUp],
                   }
-                >
-                  <HiOutlineReply />
-                  Reply
-                </Button>
-                {showReplyBox && (
-                  <div className="mt-2">
-                    <textarea
-                      className="form-control"
-                      placeholder="Write your reply..."
-                      rows={3}
-                    />
-                    <Button className="mt-2">Submit Reply</Button>
-                    <Button
-                      onClick={() =>
-                        setReplyBoxMap((prev) => ({
-                          ...prev,
-                          [key]: !showReplyBox,
-                        }))
-                      }
-                      className="mt-2 ms-2"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                )}
-              </h5>
-              {followup?.replies?.map((reply) => {
-                const key = String(reply._id);
-                const showReplyBox = replyBoxMap2[key] ?? false;
-                return (
-                  <div key={reply._id} className="reply-item">
-                    <div className="d-flex">
-                      <h6 className="me-2">
-                        <FaUser />
-                        {reply.author}
-                      </h6>{" "}
-                      <span className="timestamp">
-                        Updated {reply.timestamp?.slice(0, 10)}
-                      </span>
-                    </div>
-                    {reply.details}
-                    <br />{" "}
-                    <Button
-                      onClick={() =>
-                        setReplyBoxMap2((prev) => ({
-                          ...prev,
-                          [key]: !showReplyBox, // toggle only this reply box
-                        }))
-                      }
-                      className="reply-button"
-                    >
-                      <HiOutlineReply />
-                      Reply
-                    </Button>
-                    {showReplyBox && (
-                      <div className="mt-2">
-                        <textarea
-                          className="form-control"
-                          placeholder="Write your reply..."
-                          rows={3}
-                        />
-                        <Button className="mt-2">Submit Reply</Button>
-                        <Button
-                          onClick={() =>
-                            setReplyBoxMap2((prev) => ({
-                              ...prev,
-                              [key]: !showReplyBox,
-                            }))
-                          }
-                          className="mt-2 ms-2"
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                : f
+        );
+        dispatch(
+            setPost({
+                ...post,
+                follow_ups: updatedFollowups,
+            })
+        );
+    };
+
+    
+    const submitReplyToReply = async (followupId: string, replyId: string) => {
+        const replyToReply = await client.createReplyToReply(
+            pid as string,
+            followupId,
+            replyId,
+            { details: ReplyContent }
+        );
+        setReplyContent("");
+        
+        //TODO: logic to update react state for reply to replies.
+        
+    };
+
+    const toggleResolved = () => {};
+
+    const updateFollowupResolved = (followup: FollowUp) => {
+        // TODO: add code to update backend
+
+        let followups = JSON.parse(JSON.stringify(post.follow_ups));
+        let updatedFollowups = followups.map((f: any) => {
+            if (f._id === followup._id) {
+                f.is_resolved = !followup.is_resolved;
+                return f;
+            } else {
+                return f;
+            }
+        });
+        dispatch(
+            setPost({
+                ...post,
+                follow_ups: updatedFollowups,
+            })
+        );
+    };
+
+    return (
+        <div className="followup">
+            {(post?.instructor_answer || post?.student_answer) && <Form />}
+            <h5>
+                <FaRegComment /> Follow Up Discussions
+            </h5>
+            <hr />
+            <div className="followup-lists">
+                {post?.follow_ups?.map((followup) => {
+                    const key = String(followup._id);
+                    const isResolved =
+                        isResolvedMap[key] ?? followup.is_resolved;
+                    const showReplyBox = replyBoxMap[key] ?? false;
+                    return (
+                        // These are followups
+                        <div key={key} className="followup-item">
+                            <FormCheck
+                                defaultChecked={followup.is_resolved}
+                                type="switch"
+                                label={
+                                    followup.is_resolved
+                                        ? "Resolved"
+                                        : "Unresolved"
+                                }
+                                onChange={() =>
+                                    updateFollowupResolved(followup)
+                                }
+                            ></FormCheck>
+                            <div className="d-flex">
+                                <h4>
+                                    <FaUser />
+                                    {followup.author}
+                                </h4>
+                                <h6 className="ms-2">
+                                    <span className="timestamp">
+                                        Updated{" "}
+                                        {followup.timestamp?.slice(0, 10)}
+                                    </span>
+                                </h6>{" "}
+                            </div>
+                            <h5>
+                                {followup.details} <br />{" "}
+                                <Button
+                                    className="reply-button"
+                                    onClick={() =>
+                                        setReplyBoxMap((prev) => ({
+                                            ...prev,
+                                            [key]: !showReplyBox,
+                                        }))
+                                    }
+                                >
+                                    <HiOutlineReply />
+                                    Reply
+                                </Button>
+                                {showReplyBox && (
+                                    <div className="mt-2">
+                                        <textarea
+                                            className="form-control"
+                                            placeholder="Write your reply..."
+                                            rows={3}
+                                            onChange={(e) => {
+                                                setReplyContent(e.target.value);
+                                            }}
+                                        />
+                                        <Button
+                                            className="mt-2"
+                                            onClick={() => {
+                                                submitReplyToFollowup(
+                                                    followup._id
+                                                        ? followup._id
+                                                        : ""
+                                                );
+                                                setReplyBoxMap((prev) => ({
+                                                    ...prev,
+                                                    [key]: !showReplyBox,
+                                                }));
+                                            }}
+                                        >
+                                            Submit Reply
+                                        </Button>
+                                        <Button
+                                            onClick={() =>
+                                                setReplyBoxMap((prev) => ({
+                                                    ...prev,
+                                                    [key]: !showReplyBox,
+                                                }))
+                                            }
+                                            className="mt-2 ms-2"
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                )}
+                            </h5>
+
+                            {/* These are replies to followups */}
+                            {followup?.replies?.map((reply) => {
+                                const key = String(reply._id);
+                                const showReplyBox = replyBoxMap2[key] ?? false;
+                                return (
+                                    <div key={reply._id} className="reply-item">
+                                        <div className="d-flex">
+                                            <h6 className="me-2">
+                                                <FaUser />
+                                                {reply.author}
+                                            </h6>{" "}
+                                            <span className="timestamp">
+                                                Updated{" "}
+                                                {reply.timestamp?.slice(0, 10)}
+                                            </span>
+                                        </div>
+                                        {reply.details}
+                                        <br />{" "}
+                                        <Button
+                                            onClick={() =>
+                                                setReplyBoxMap2((prev) => ({
+                                                    ...prev,
+                                                    [key]: !showReplyBox, // toggle only this reply box
+                                                }))
+                                            }
+                                            className="reply-button"
+                                        >
+                                            <HiOutlineReply />
+                                            Reply
+                                        </Button>
+                                        {showReplyBox && (
+                                            <div className="mt-2">
+                                                <textarea
+                                                    className="form-control"
+                                                    placeholder="Write your reply..."
+                                                    rows={3}
+                                                    onChange={(e) => {
+                                                        setReplyContent(
+                                                            e.target.value
+                                                        );
+                                                    }}
+                                                />
+                                                <Button
+                                                    className="mt-2"
+                                                    onClick={() => {
+                                                        submitReplyToReply(
+                                                            followup._id
+                                                                ? followup._id
+                                                                : "",
+                                                            reply._id
+                                                                ? reply._id
+                                                                : ""
+                                                        );
+                                                        setReplyBoxMap2(
+                                                            (prev) => ({
+                                                                ...prev,
+                                                                [key]: !showReplyBox,
+                                                            })
+                                                        );
+                                                    }}
+                                                >
+                                                    Submit Reply
+                                                </Button>
+                                                <Button
+                                                    onClick={() => {
+                                                        setReplyBoxMap2(
+                                                            (prev) => ({
+                                                                ...prev,
+                                                                [key]: !showReplyBox,
+                                                            })
+                                                        );
+                                                    }}
+                                                    className="mt-2 ms-2"
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    );
+                })}
             </div>
-          );
-        })}
-      </div>
-      <hr />
-      <div className="followup-textbox mb-3">
-        <Form>
-          <FormControl
-            type="text"
-            placeholder="Compose a Followup Discussion here!"
-            defaultValue={followupContent}
-            onChange={(e) => {
-              setFollowupContent(e.target.value);
-            }}
-            onKeyDown={async (e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                createFollowup();
-                setFollowupContent("")
-              }
-            }}
-          />
-        </Form>
-      </div>
-    </div>
-  );
+            <hr />
+            <div className="followup-textbox mb-3">
+                <Form>
+                    <FormControl
+                        type="text"
+                        placeholder="Compose a Followup Discussion here!"
+                        value={followupContent}     
+                        onChange={(e) => {
+                            setFollowupContent(e.target.value);
+                        }}
+                        onKeyDown={async (e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                createFollowup();
+                                setFollowupContent("");
+                            }
+                        }}
+                    />
+                </Form>
+            </div>
+        </div>
+    );
 }

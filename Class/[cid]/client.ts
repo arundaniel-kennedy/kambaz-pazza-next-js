@@ -79,10 +79,12 @@ export async function createReplyToFollowup(
     followupId: string,
     reply: Replies
 ) {
+    
     const newReply = await axiosWithCredentials.post(
         `${POSTS_API}/${postId}/followup/${followupId}/reply`,
         reply
     );
+    
     return newReply.data;
 }
 
