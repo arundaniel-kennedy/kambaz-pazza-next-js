@@ -7,17 +7,37 @@
     padding: 0;
     height: var(--main-navbar-height);
 
-    a {
+    a.nav-link {
         color: vars(primary-font-color);
+        position: relative;
+
+        &::after {
+            content: "";
+            width: 0%;
+            height: 3px;
+            background: white;
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: width ease-in-out 0.2s;
+        }
 
         &:hover {
             color: vars(primary-font-color) !important;
-            text-decoration: underline;
+
+            &::after {
+                width: 80%;
+            }
         }
         &:active,
         &:focus-within,
         &.active {
             color: vars(primary-font-color) !important;
+
+            &::after {
+                width: 80%;
+            }
         }
     }
     .nav-user-pill {

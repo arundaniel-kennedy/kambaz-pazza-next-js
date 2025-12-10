@@ -5,7 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, FormControl } from "react-bootstrap";
 import { storeType } from "../../../store";
 import { updateFolderSettings } from "../data/reducer";
-import { FaCheck, FaEyeSlash, FaPencil, FaPlus, FaTrash } from "react-icons/fa6";
+import {
+  FaCheck,
+  FaEyeSlash,
+  FaPencil,
+  FaPlus,
+  FaTrash,
+} from "react-icons/fa6";
 import { BsGripVertical } from "react-icons/bs";
 
 import * as client from "../data/client";
@@ -23,7 +29,8 @@ export default function ClassFolders() {
   const [suffixStart, setSuffixStart] = useState(1);
   const [suffixEnd, setSuffixEnd] = useState(4);
   const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
-  const [editFolder, SetEditFolder] = useState("")
+  const [editFolder, setEditFolder] = useState("");
+  const [editFolderName, setEditFolderName] = useState("");
   const dispatch = useDispatch();
 
   const fetchFolders = async () => {
@@ -69,13 +76,39 @@ export default function ClassFolders() {
     setSelectedFolders([]);
   };
 
-  const startFolderEdit = (e: any) => {
-    e.preventDefault();
-    let div = document.createElement("span")
-    div.appendChild(document.createElement("FaCheck"))
-    div.appendChild(document.createTextNode("Done"))
-    e.target.replaceChildren(div)
+  const startUpdateFolderName = (fid: string) => {
+    const folder = folders_settings?.folders?.find((f) => f._id === fid);
+    setEditFolderName(folder?.name ?? "");
+    setEditFolder(fid);
   };
+
+  const updateFolderName = async () => {
+    const updatedFolder = await client.updateFolder(cid as string, editFolder, editFolderName);
+    if (updatedFolder.hasOwnProperty("message")) {
+      console.log(updatedFolder)
+      if (updatedFolder.message.errmsg.includes("duplicate key error"))
+        alert(`Entered folder name already present under course ${cid}`);
+    } else {
+      const updatedFolders = JSON.parse(
+        JSON.stringify(folders_settings?.folders)
+      );
+      dispatch(
+        updateFolderSettings({
+          ...folders_settings,
+          folders: updatedFolders.map((f: any) => {
+            if (f._id === editFolder) {
+              return { ...f, name: editFolderName };
+            } else {
+              return f;
+            }
+          }),
+        })
+      );
+    }
+    setEditFolderName("");
+    setEditFolder("");
+  };
+
   useEffect(() => {
     fetchFolders();
   }, []);
@@ -213,19 +246,39 @@ export default function ClassFolders() {
                     }}
                   />
                   <BsGripVertical className="mx-2" />
-                  <span className="folder-pill">{folder.name}</span>
+                  {editFolder !== folder?._id ? (
+                    <span className="folder-pill">{folder.name}</span>
+                  ) : (
+                    <FormControl
+                      className="w-50 form-control-sm"
+                      defaultValue={editFolderName}
+                      onChange={(e) => setEditFolderName(e.target.value)}
+                    />
+                  )}
+
                   <div
                     className="btn-group ms-auto"
                     role="group"
                     aria-label="Basic example"
                   >
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-outline-primary d-flex flex-row align-items-center gap-2"
-                      onClick={startFolderEdit}
-                    >
-                      <FaPencil /> Edit
-                    </button>
+                    {editFolder === folder?._id ? (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-primary d-flex flex-row align-items-center gap-2"
+                        onClick={updateFolderName}
+                      >
+                        <FaCheck /> Done
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-primary d-flex flex-row align-items-center gap-2"
+                        onClick={() => startUpdateFolderName(folder?._id ?? "")}
+                      >
+                        <FaPencil /> Edit
+                      </button>
+                    )}
+
                     <button
                       type="button"
                       className="btn btn-sm btn-outline-primary d-flex flex-row align-items-center gap-2"

@@ -148,23 +148,22 @@ export default function Posts() {
               <TbLetterS className="letter-s fs-2" />
               Student&apos;s Answer
             </h5>
-            {post?.answer?.map((a) => {
-              return a.author.includes("student") ? (
-                <div key={a._id} className="ms-5">
-                  <div className="d-flex">
-                    <h6 className="me-2">
-                      <FaUser />
-                      {a.author}
-                    </h6>{" "}
-                    <span className="timestamp">
-                      Updated {a.timestamp.slice(0, 10)}
-                    </span>
-                  </div>
-                  {a.details} <br />
+            {post?.student_answer && (
+              <div key={post?.student_answer._id} className="ms-5">
+                <div className="d-flex">
+                  <h6 className="me-2">
+                    <FaUser />
+                    {post?.student_answer.author.firstName}{" "}
+                    {post?.student_answer.author.lastName}
+                  </h6>{" "}
+                  <span className="timestamp">
+                    Updated {post?.student_answer.timestamp.slice(0, 10)}
+                  </span>
                 </div>
-              ) : null;
-            })}
-            {!post?.answer && (
+                {post?.student_answer.details} <br />
+              </div>
+            )}
+            {!post?.student_answer && (
               <div>
                 <CustomEditor />
                 <Button
@@ -184,22 +183,21 @@ export default function Posts() {
               <TbLetterISmall className="letter-i fs-2" />
               Instructor&apos;s Answer
             </h5>
-            {post?.answer?.map((a) => {
-              return a.author.includes("instructor") ? (
-                <div key={a._id} className="ms-5">
-                  <div className="d-flex">
-                    <h6 className="me-2">
-                      <FaUser /> {a.author}
-                    </h6>{" "}
-                    <span className="timestamp">
-                      Updated {a.timestamp.slice(0, 10)}
-                    </span>
-                  </div>
-                  {a.details} <br />
+            {post?.instructor_answer && (
+              <div key={post?.instructor_answer._id} className="ms-5">
+                <div className="d-flex">
+                  <h6 className="me-2">
+                    <FaUser /> {post?.instructor_answer.author.firstName}{" "}
+                    {post?.instructor_answer.author.lastName}
+                  </h6>{" "}
+                  <span className="timestamp">
+                    Updated {post?.instructor_answer.timestamp.slice(0, 10)}
+                  </span>
                 </div>
-              ) : null;
-            })}
-            {!post?.answer && (
+                {post?.instructor_answer.details} <br />
+              </div>
+            )}
+            {!post?.instructor_answer && (
               <div>
                 <CustomEditor />
                 <Button
@@ -219,7 +217,7 @@ export default function Posts() {
 
       <hr />
       <div className="followup">
-        {post?.answer && <Form />}
+        {(post?.instructor_answer || post?.student_answer) && <Form />}
         <h5>
           <FaRegComment /> Follow Up Discussions
         </h5>

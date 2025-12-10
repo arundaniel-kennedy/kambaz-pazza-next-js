@@ -5,13 +5,14 @@ import { Nav, Navbar } from "react-bootstrap";
 import PazzaLogo from "./PazzaLogo";
 
 import "./Navigation.scss";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { storeType } from "./store";
 
 export default function Navigation() {
   const { cid } = useParams();
+  const path = usePathname();
   const { currentUser } = useSelector(
     (state: storeType) => state.accountReducer
   );
@@ -24,7 +25,7 @@ export default function Navigation() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav mx-auto">
         <Nav className="mx-auto gap-4">
-          <Nav.Link as={Link} href={`/Pazza/Class/${cid}`}>
+          <Nav.Link as={Link} href={`/Pazza/Class/${cid}`} active={path.endsWith(`Class/${cid}`)}>
             Q&A
           </Nav.Link>
           {["FACULTY", "TA"].includes(currentUser?.role ?? "") ? (
