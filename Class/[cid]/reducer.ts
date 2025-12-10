@@ -16,7 +16,7 @@ const classSlice = createSlice({
     //ashwin reducers go here
 
 
-// ******************************
+    // ******************************
     //Arun reducers go here
     //edit answer
     //create folloup
@@ -45,12 +45,14 @@ const classSlice = createSlice({
     toggleSidebar: (state, action) => {
       state.showSidebar = action.payload;
     },
-    setPost: (state, { payload: postId }) => {
+    setPostUsingId: (state, { payload: postId }) => {
       state.post = state.posts.find((p) => p._id === postId);
     },
-    
+    setPost: (state, { payload: post }) => {
+      state.post = post
+    }
   },
 });
-export const { getPostsFromClass, toggleSidebar, setPosts, addPost,setPost} =
+export const { getPostsFromClass, toggleSidebar, setPosts, addPost, setPost, setPostUsingId } =
   classSlice.actions;
 export default classSlice.reducer;

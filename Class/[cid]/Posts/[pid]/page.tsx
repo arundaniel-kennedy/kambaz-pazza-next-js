@@ -27,9 +27,7 @@ export default function Posts() {
 
   const [showEdit, setShowEdit] = useState(false);
   const { cid, pid } = useParams();
-  const post = useSelector(
-    (state: storeType) => state.classConfigureReducer as Posts | undefined
-  );
+  const { post } = useSelector((state: storeType) => state.classReducer);
   const dispatch = useDispatch();
   const [isResolvedMap, setResolvedMap] = useState<Record<string, boolean>>({});
   const [replyBoxMap, setReplyBoxMap] = useState<Record<string, boolean>>({});
@@ -41,15 +39,14 @@ export default function Posts() {
     (state: RootState) => state.accountReducer.currentUser
   );
   const isInstr = currentUser?.role === "FACULTY";
-  
+
+  async function fetchPost() {
+    const post = await client.getPost(pid as string);
+    dispatch(setPost(post));
+  }
+
   //Screen load
   useEffect(() => {
-    async function fetchPost() {
-      const post = await client.getPost(pid as string);
-      
-      dispatch(setPost(post as Posts));
-      
-    }
     fetchPost();
   }, []);
 
@@ -116,7 +113,7 @@ export default function Posts() {
       <hr />
       <div className="d-flex">
         <div className="folder-name">Folder Name</div>
-        {!showEdit &&(isInstr)&& (
+        {!showEdit && isInstr && (
           <Button className="edit-button " onClick={() => editPost()}>
             Edit
           </Button>

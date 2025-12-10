@@ -23,7 +23,7 @@ export async function getAllPostsForCourse(courseId: string) {
 
 export async function getPost(postId: string) {
   const post = await axios.get(`${POSTS_API}/${postId}`);
-  console.log("This is client post",post.data);
+  // console.log("This is client post",post.data);
   return post.data;
 }
 
