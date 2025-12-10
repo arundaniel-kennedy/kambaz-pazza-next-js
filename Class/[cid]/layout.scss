@@ -28,7 +28,7 @@
       height: var(--folder-filter);
     }
     .content-wrapper {
-      height: calc(100% - var(--folder-filter));
+      height: calc(100% - var(--folder-filter) - 22px);
       overflow-y: auto;
       margin: 20px;
     }
