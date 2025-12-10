@@ -30,7 +30,8 @@
     .content-wrapper {
       height: calc(100% - var(--folder-filter) - 22px);
       overflow-y: auto;
-      margin: 20px;
+      margin-top: 20px;
+      padding-right: 15px;
     }
   }
 }

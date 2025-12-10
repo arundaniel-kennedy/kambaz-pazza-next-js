@@ -25,7 +25,7 @@ export default function Navigation() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav mx-auto">
         <Nav className="mx-auto gap-4">
-          <Nav.Link as={Link} href={`/Pazza/Class/${cid}`} active={path.endsWith(`Class/${cid}`)}>
+          <Nav.Link as={Link} href={`/Pazza/Class/${cid}`} active={path.includes(`Class/${cid}`)}>
             Q&A
           </Nav.Link>
           {["FACULTY", "TA"].includes(currentUser?.role ?? "") ? (
@@ -37,7 +37,7 @@ export default function Navigation() {
           )}
         </Nav>
       </Navbar.Collapse>
-      <div className="nav-user-pill">Arun Daniel</div>
+      <div className="nav-user-pill">{currentUser?.firstName} {currentUser?.lastName}</div>
     </Navbar>
   );
 }
