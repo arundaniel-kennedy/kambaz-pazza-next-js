@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import "./sidebar.scss";
 import {
   Button,
   Dropdown,
@@ -22,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "./reducer";
 
 import * as client from "./client";
+import "./sidebar.scss";
 
 export default function Sidebar() {
   const [togglePostsToday, setTogglePostsToday] = useState(true);
@@ -32,13 +32,15 @@ export default function Sidebar() {
   const { cid, pid } = useParams();
   const pathname = usePathname();
   const dispatch = useDispatch();
-  const posts = useSelector((state: storeType) => state.classReducer.posts);
+  const { posts } = useSelector((state: storeType) => state.classReducer);
   console.log(">>>>", posts);
 
   const getAllPosts = async () => {
-    const posts = await client.getAllPostsForCourse(cid as string);
-    dispatch(setPosts(posts));
+    const data = await client.getAllPostsForCourse(cid as string);
+    dispatch(setPosts(data));
   };
+
+  const getTodaysPost = async (posts: storeType) => {};
 
   useEffect(() => {
     getAllPosts();
@@ -52,7 +54,7 @@ export default function Sidebar() {
           href={`/Pazza/Class/${cid}/Create`}
           className="new-post-button btn btn-pimary"
         >
-          <CiCirclePlus />
+          <CiCirclePlus className="text-white"/>
           <span className="ms-2 text-white">New Post</span>
         </Link>
         <div className="search-input">
@@ -62,17 +64,17 @@ export default function Sidebar() {
       </div>
       <div className="posts-feed">
         {/* All Posts */}
-        <div className="posts-list ">
+        <div className="posts-list">
           <ListGroup className="posts-list-group">
             {/* Today Category */}
-            <ListGroupItem className="post-category-today">
-              <span
+            <ListGroupItem className="post-category">
+              <div
                 className="post-today-cursor"
                 onClick={() => setTogglePostsToday(!togglePostsToday)}
               >
                 Today
                 <GoTriangleDown />
-              </span>{" "}
+              </div>{" "}
               {togglePostsToday && (
                 <ListGroup>
                   {posts.map((post) => {

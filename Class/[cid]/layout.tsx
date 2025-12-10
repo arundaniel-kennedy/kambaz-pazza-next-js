@@ -20,11 +20,7 @@ export default function ClassLayout({
   };
   return (
     <div className="class-wrapper">
-      {showSidebar && (
-        <div className="sidebar-wrapper">
-          <Sidebar />
-        </div>
-      )}
+      {showSidebar && <Sidebar />}
       <div className="fs-4 me-2 sidebar-toggle-icon  ">
         {!showSidebar && (
           <VscTriangleRight
