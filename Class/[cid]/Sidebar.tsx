@@ -1,14 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
   FormControl,
   ListGroup,
   ListGroupItem,
+  Collapse,
 } from "react-bootstrap";
 import { CiCirclePlus, CiSearch } from "react-icons/ci";
 import Link from "next/link";
@@ -19,247 +15,216 @@ import { FaChalkboardTeacher } from "react-icons/fa";
 import { storeType } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "./reducer";
-
 import * as client from "./client";
 import "./sidebar.scss";
 
 export default function Sidebar() {
-  const [togglePostsToday, setTogglePostsToday] = useState(true);
-  const [togglePostsYesterday, setTogglePostsYesterday] = useState(true);
-  const [togglePostsThisWeek, setTogglePostsThisWeek] = useState(true);
-  const [togglePostsLastWeek, setTogglePostsLastWeek] = useState(true);
-  const [togglePostsDateWeek, setTogglePostsDateWeek] = useState(true);
-  const { cid, pid } = useParams();
+  // State for search and collapsible groups
+  const [searchQuery, setSearchQuery] = useState("");
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+  
+  const { cid } = useParams();
   const pathname = usePathname();
   const dispatch = useDispatch();
+  
   const { posts } = useSelector((state: storeType) => state.classReducer);
-  console.log(">>>>", posts);
+  // Assuming you have access to currentUser in Redux to check ID
+  const { currentUser } = useSelector((state: any) => state.accountReducer); 
 
   const getAllPosts = async () => {
     const data = await client.getAllPostsForCourse(cid as string);
+    console.log(data)
     dispatch(setPosts(data));
   };
-
-  const getTodaysPost = async (posts: storeType) => {};
 
   useEffect(() => {
     getAllPosts();
   }, []);
 
+  // --- Logic 1: Helper to get Week Range (Mon - Sun) ---
+  const getWeekRangeString = (dateObj: Date) => {
+    const d = new Date(dateObj);
+    const day = d.getDay(); 
+    // Calculate Monday (diff is distance from current day to Monday)
+    // If day is 0 (Sunday), subtract 6. If 1 (Monday), subtract 0.
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    
+    const monday = new Date(d.setDate(diff));
+    const sunday = new Date(new Date(monday).setDate(monday.getDate() + 6));
+
+    const format = (date: Date) => `${date.getMonth() + 1}/${date.getDate()}`;
+    // E.g., "1/13 - 1/19"
+    return `${format(monday)} - ${format(sunday)}`;
+  };
+
+  // --- Logic 2: Filter, Sort, and Group Posts ---
+  const groupedPosts = useMemo(() => {
+    if (!posts) return {};
+
+    // 1. Filter by Search
+    const filtered = posts.filter((p) => 
+       (p.summary?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
+       (p.details?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+    );
+
+    // 2. Sort Descending
+    filtered.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+    // 3. Group
+    const groups: Record<string, typeof posts> = {};
+    
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const lastWeekStart = new Date(today);
+    lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+
+    filtered.forEach((post) => {
+      const postDate = new Date(post.timestamp);
+      // Normalize post date to midnight for comparison
+      const postDateMidnight = new Date(postDate.getFullYear(), postDate.getMonth(), postDate.getDate());
+
+      let groupName = "";
+
+      if (postDateMidnight.getTime() === today.getTime()) {
+        groupName = "Today";
+      } else if (postDateMidnight.getTime() === yesterday.getTime()) {
+        groupName = "Yesterday";
+      } else if (postDateMidnight >= lastWeekStart) {
+        groupName = "Last Week";
+      } else {
+        // Older than last week: Group by Week Range
+        groupName = getWeekRangeString(postDate);
+      }
+
+      if (!groups[groupName]) groups[groupName] = [];
+      groups[groupName].push(post);
+    });
+
+    return groups;
+  }, [posts, searchQuery]);
+
+
+  // Helper to toggle accordion
+  const toggleGroup = (groupName: string) => {
+    setCollapsedGroups(prev => ({
+      ...prev,
+      [groupName]: !prev[groupName] // Toggle boolean
+    }));
+  };
+
   return (
     <div className="sidebar-wrapper">
       {/* Sidebar Buttons */}
-      <div className="sidebar-buttons ">
+      <div className="sidebar-buttons">
         <Link
           href={`/Pazza/Class/${cid}/Create`}
-          className="new-post-button btn btn-pimary"
+          className="new-post-button btn btn-primary"
         >
-          <CiCirclePlus className="text-white"/>
+          <CiCirclePlus className="text-white" />
           <span className="ms-2 text-white">New Post</span>
         </Link>
         <div className="search-input">
           <CiSearch className="search-icon" />
-          <FormControl className="search-bar" placeholder="Search posts..." />
+          <FormControl 
+            className="search-bar" 
+            placeholder="Search posts..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
       </div>
+
       <div className="posts-feed">
-        {/* All Posts */}
         <div className="posts-list">
           <ListGroup className="posts-list-group">
-            {/* Today Category */}
-            <ListGroupItem className="post-category">
-              <div
-                className="post-today-cursor"
-                onClick={() => setTogglePostsToday(!togglePostsToday)}
-              >
-                Today
-                <GoTriangleDown />
-              </div>{" "}
-              {togglePostsToday && (
-                <ListGroup>
-                  {posts.map((post) => {
-                    return (
-                      <div key={post._id}>
-                        <Link
-                          href={`/Pazza/Class/${cid}/Posts/${post._id}`}
-                          className="post-link"
-                        >
-                          <ListGroupItem
-                            className={`post-item  ${
-                              pathname.includes(`${post._id}`)
-                                ? " bg-primary-subtle"
-                                : ""
-                            }`}
-                          >
-                            <div className="post-time float-end">
-                              {(post.timestamp ?? "").slice(0, 10)}
-                            </div>
-                            <div className="posts-title">
-                              {(post.author ?? "").includes("instructor") && (
-                                <>
-                                  <span className="border border-1 border-dark rounded">
-                                    <FaChalkboardTeacher className="me-1" />
-                                    Instr
-                                  </span>{" "}
-                                </>
-                              )}
-                              {(post.author ?? "").includes("student") && (
-                                <>
-                                  <span className="border border-1 border-dark rounded ">
-                                    <PiStudentBold className="me-1" />
-                                    Stu
-                                  </span>{" "}
-                                </>
-                              )}
+            
+            {/* Map through the groups generated by logic above */}
+            {Object.keys(groupedPosts).map((groupName) => {
+              // Default to expanded (true) if undefined
+              const isExpanded = collapsedGroups[groupName] !== true; 
 
-                              {post.summary}
-                            </div>
-                            <div className="posts-description">
-                              {post.details}
-                            </div>
-                          </ListGroupItem>
-                        </Link>
-                      </div>
-                    );
-                  })}
-                </ListGroup>
-              )}
-            </ListGroupItem>
-
-            {/* Yesterday Category */}
-            {/* <ListGroupItem className="post-category-yesterday">
-              <span
-                className="post-yesterday-cursor"
-                onClick={() => setTogglePostsYesterday(!togglePostsYesterday)}
-              >
-                Yesterday
-                <GoTriangleDown />{" "}
-              </span>{" "}
-              {togglePostsYesterday && (
-                <ListGroup>
-                  <Link
-                    href={`/Pazza/Class/${cid}/Posts/124`}
-                    className="post-link"
+              return (
+                <ListGroupItem key={groupName} className="post-category">
+                  {/* Category Header */}
+                  <div
+                    className="post-today-cursor d-flex justify-content-between align-items-center"
+                    onClick={() => toggleGroup(groupName)}
                   >
-                    <ListGroupItem
-                      className={`post-item  ${
-                        pathname.includes("124") ? " bg-primary-subtle" : ""
-                      }`}
-                    >
-                      <div className="post-time float-end">Time</div>
-                      <div className="posts-title">
-                        <span className="border border-1 border-dark rounded ">
-                          <PiStudentBold className="me-1" />
-                          Stu
-                        </span>{" "}
-                        Post Title 2
-                      </div>
-                      <div className="posts-description">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat. Duis aute irure dolor in
-                        reprehenderit in voluptate velit esse cillum dolore eu
-                        fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit
-                        anim id est laborum
-                      </div>
-                    </ListGroupItem>
-                  </Link>
-                </ListGroup>
-              )}
-            </ListGroupItem> */}
+                    <span className="fw-bold">{groupName}</span>
+                    <GoTriangleDown 
+                      style={{ 
+                        transform: isExpanded ? "rotate(0deg)" : "rotate(-90deg)",
+                        transition: "transform 0.2s" 
+                      }} 
+                    />
+                  </div>
 
-            {/* Last Week Category */}
-            {/* <ListGroupItem className="post-category-yesterday">
-              <span
-                className="post-yesterday-cursor"
-                onClick={() => setTogglePostsLastWeek(!togglePostsLastWeek)}
-              >
-                Last Week
-                <GoTriangleDown />
-              </span>{" "}
-              {togglePostsLastWeek && (
-                <ListGroup>
-                  <Link
-                    href={`/Pazza/Class/${cid}/Posts/125`}
-                    className="post-link"
-                  >
-                    <ListGroupItem
-                      className={`post-item  ${
-                        pathname.includes("125") ? " bg-primary-subtle" : ""
-                      }`}
-                    >
-                      <div className="post-time float-end">Time</div>
-                      <div className="posts-title">
-                        <span className="border border-1 border-dark rounded ">
-                          <PiStudentBold className="me-1" />
-                          Stu
-                        </span>{" "}
-                        Post Title 3
-                      </div>
-                      <div className="posts-description">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat. Duis aute irure dolor in
-                        reprehenderit in voluptate velit esse cillum dolore eu
-                        fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit
-                        anim id est laborum
-                      </div>
-                    </ListGroupItem>
-                  </Link>
-                </ListGroup>
-              )}
-            </ListGroupItem> */}
+                  {/* Collapsible Content */}
+                  <Collapse in={isExpanded}>
+                    <div>
+                      <ListGroup>
+                        {groupedPosts[groupName].map((post) => {
+                          // Logic 3: Check Read/Unread
+                          // If current user is NOT in read_by array, it is unread
+                          const isUnread = currentUser?._id && !post.read_by?.includes(currentUser._id);
 
-            {/* Date Week Category */}
-            {/* <ListGroupItem className="post-category-yesterday">
-              <span
-                className="post-yesterday-cursor"
-                onClick={() => setTogglePostsDateWeek(!togglePostsDateWeek)}
-              >
-                1/13 - 1/19
-                <GoTriangleDown />
-              </span>{" "}
-              {togglePostsDateWeek && (
-                <ListGroup>
-                  <Link
-                    href={`/Pazza/Class/${cid}/Posts/126`}
-                    className="post-link"
-                  >
-                    <ListGroupItem
-                      className={`post-item  ${
-                        pathname.includes("126") ? " bg-primary-subtle" : ""
-                      }`}
-                    >
-                      <div className="post-time float-end">Time</div>
-                      <div className="posts-title">
-                        <span className="border border-1 border-dark rounded ">
-                          <PiStudentBold className="me-1" />
-                          Stu
-                        </span>{" "}
-                        Post Title 4
-                      </div>
-                      <div className="posts-description">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat. Duis aute irure dolor in
-                        reprehenderit in voluptate velit esse cillum dolore eu
-                        fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit
-                        anim id est laborum
-                      </div>
-                    </ListGroupItem>
-                  </Link>
-                </ListGroup>
-              )}
-            </ListGroupItem> */}
+                          return (
+                            <div key={post._id}>
+                              <Link
+                                href={`/Pazza/Class/${cid}/Posts/${post._id}`}
+                                className="post-link"
+                              >
+                                <ListGroupItem
+                                  className={`post-item 
+                                    ${pathname.includes(`${post._id}`) ? " bg-primary-subtle" : ""}
+                                    ${isUnread ? " unread" : ""}
+                                  `}
+                                >
+                                  <div className="post-time float-end">
+                                    {new Date(post.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </div>
+                                  
+                                  <div className={`posts-title ${!post.read_by?.includes(currentUser?._id) ? "fw-bold" : ""}`}>
+                                    {/* Instructor Badge */}
+                                    {(post?.author?.role === "FACULTY" || post?.author?.role === "TA") && (
+                                      <span className="border border-1 border-dark rounded me-1 px-1">
+                                        <FaChalkboardTeacher className="me-1" />
+                                      </span>
+                                    )}
+                                    {/* Student Badge */}
+                                    {post?.author?.role === "STUDENT" && (
+                                      <span className="border border-1 border-dark rounded me-1 px-1">
+                                        <PiStudentBold className="me-1" />
+                                      </span>
+                                    )}
+                                    {post.summary}
+                                  </div>
+                                  
+                                  <div className="posts-description">
+                                    {post.details}
+                                  </div>
+                                </ListGroupItem>
+                              </Link>
+                            </div>
+                          );
+                        })}
+                      </ListGroup>
+                    </div>
+                  </Collapse>
+                </ListGroupItem>
+              );
+            })}
+
+            {/* Empty State */}
+            {Object.keys(groupedPosts).length === 0 && (
+               <div className="p-3 text-center text-muted">
+                 No posts found.
+               </div>
+            )}
+
           </ListGroup>
         </div>
       </div>

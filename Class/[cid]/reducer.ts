@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Posts } from "./DataStructure";
 import { v4 as uuidv4 } from "uuid";
+
 const initialState = {
   posts: [] as Posts[],
   showSidebar: true,
