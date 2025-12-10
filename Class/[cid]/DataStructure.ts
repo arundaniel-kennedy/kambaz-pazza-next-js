@@ -1,17 +1,5 @@
-export interface User {
-    _id: string,
-    username: string,
-    password: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    dob: string,
-    role: string,
-    loginId: string,
-    section: string,
-    lastActivity: string,
-    totalActivity: string,
-}
+import { User } from "@/app/(Kambaz)/Account/reducer";
+
 export type Posts = {
   _id?: string;
   post_type?: string;
@@ -26,7 +14,7 @@ export type Posts = {
   timestamp?: string;
   views?: number;
   answer?: Answer[];
-  read_by?:string[];
+  read_by?:string[]|User[];
 };
 export type FollowUp = {
   _id?: string;

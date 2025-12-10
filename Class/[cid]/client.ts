@@ -23,19 +23,20 @@ export async function getAllPostsForCourse(courseId: string) {
 
 export async function getPost(postId: string) {
   const post = await axios.get(`${POSTS_API}/${postId}`);
-  return post;
+  console.log("This is client post",post.data);
+  return post.data;
 }
 
 export async function getViews(postId: string) {
   const views = await axios.get(`${POSTS_API}/views/${postId}`);
-  return views;
+  return views.data;
 }
 
 export async function readPost(postId: string) {
   const response = await axiosWithCredentials.put(
     `${POSTS_API}/views/${postId}`
   );
-  return response;
+  return response.data;
 }
 
 export async function editPost(postId: string|undefined, postUpdates: Posts) {
@@ -43,7 +44,7 @@ export async function editPost(postId: string|undefined, postUpdates: Posts) {
     `${POSTS_API}/${postId}`,
     postUpdates
   );
-  return updatedPost;
+  return updatedPost.data;
 }
 
 export async function createFollowupToPost(
@@ -55,7 +56,7 @@ export async function createFollowupToPost(
     `${POSTS_API}/followup/${postId}`,
     followup
   );
-  return newFollowup;
+  return newFollowup.data;
 }
 export async function createReplyToFollowup(
   postId: string,
@@ -66,7 +67,7 @@ export async function createReplyToFollowup(
     `${POSTS_API}/reply/${postId}/${followupId}`,
     reply
   );
-  return newReply;
+  return newReply.data;
 }
 
 export async function createReplyToReply(
@@ -79,7 +80,7 @@ export async function createReplyToReply(
     `${POSTS_API}/reply/${postId}/${followupId}/${replyId}`,
     reply
   );
-  return newReply;
+  return newReply.data;
 }
 
 export async function createAnswerToPost(postId:string,answer:Answer) {
@@ -87,7 +88,7 @@ export async function createAnswerToPost(postId:string,answer:Answer) {
     `${POSTS_API}/answer/${postId}`,
     answer
   );
-  return newAnswer;
+  return newAnswer.data;
 }
 
 export async function editAnswer(answerId:string,answer:Answer) {
@@ -95,5 +96,5 @@ export async function editAnswer(answerId:string,answer:Answer) {
     `${POSTS_API}/answer/${answerId}`,
     answer
   );
-  return newAnswer;
+  return newAnswer.data;
 }

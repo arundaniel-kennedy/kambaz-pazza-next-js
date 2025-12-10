@@ -41,17 +41,14 @@ export default function Posts() {
     (state: RootState) => state.accountReducer.currentUser
   );
   const isInstr = currentUser?.role === "FACULTY";
-  const authorId =
-    typeof post?.author === "string"
-      ? post.author
-      : post?.author && typeof post.author === "object" && "_id" in post.author
-      ? (post.author as { _id?: string })._id
-      : undefined;
+  
   //Screen load
   useEffect(() => {
     async function fetchPost() {
-      const post = await client.getPost(cid as string);
+      const post = await client.getPost(pid as string);
+      
       dispatch(setPost(post as Posts));
+      
     }
     fetchPost();
   }, []);
@@ -100,7 +97,7 @@ export default function Posts() {
 
       <div>
         <h6 id="posts-author">
-          Updated by {post?.author} on{" "}
+          {/* Updated by {post?.author} on{" "} */}
           <span className="timestamp"> {post?.timestamp?.slice(0, 10)}</span>
         </h6>
       </div>
@@ -119,7 +116,7 @@ export default function Posts() {
       <hr />
       <div className="d-flex">
         <div className="folder-name">Folder Name</div>
-        {!showEdit &&(isInstr || authorId === currentUser?._id)&& (
+        {!showEdit &&(isInstr)&& (
           <Button className="edit-button " onClick={() => editPost()}>
             Edit
           </Button>
