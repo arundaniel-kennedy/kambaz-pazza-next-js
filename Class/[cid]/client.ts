@@ -49,7 +49,6 @@ export async function editPost(postId: string|undefined, postUpdates: Posts) {
 
 export async function createFollowupToPost(
   postId: string,
-  followupId: string,
   followup: FollowUp
 ) {
   const newFollowup = await axiosWithCredentials.post(
