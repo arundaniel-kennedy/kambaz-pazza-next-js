@@ -1,10 +1,12 @@
+import { User } from "@/app/(Kambaz)/Account/reducer";
+
 export type Posts = {
   _id?: string;
   post_type?: string;
   is_private?: boolean;
   is_anonymous?: boolean;
   course?: string;
-  author?: string;
+  author?: string | User;
   folder?: string;
   summary?: string;
   details?: string;
@@ -12,7 +14,7 @@ export type Posts = {
   timestamp?: string;
   views?: number;
   answer?: Answer[];
-  read_by?:string[];
+  read_by?:string[]|User[];
 };
 export type FollowUp = {
   _id?: string;
