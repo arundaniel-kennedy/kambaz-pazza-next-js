@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -9,11 +9,12 @@ import {
   DropdownToggle,
   Form,
   FormCheck,
+  FormControl,
 } from "react-bootstrap";
 import "./posts.scss";
 import { useDispatch, useSelector } from "react-redux";
 
-import type { Posts } from "../../DataStructure";
+import type { FollowUp, Posts } from "../../DataStructure";
 import { setPost } from "../../reducer";
 import { FaRegComment, FaUser } from "react-icons/fa6";
 import { TbLetterISmall, TbLetterS } from "react-icons/tb";
@@ -32,6 +33,8 @@ export default function Posts() {
   const [isResolvedMap, setResolvedMap] = useState<Record<string, boolean>>({});
   const [replyBoxMap, setReplyBoxMap] = useState<Record<string, boolean>>({});
   const [replyBoxMap2, setReplyBoxMap2] = useState<Record<string, boolean>>({});
+  const [followup, setFollowup] = useState<FollowUp>({ details: "" });
+
   const isQuestion = post
     ? post.post_type === "QUESTION" || post.post_type === "POLL"
     : false;
@@ -39,6 +42,8 @@ export default function Posts() {
     (state: RootState) => state.accountReducer.currentUser
   );
   const isInstr = currentUser?.role === "FACULTY";
+  if (!currentUser)
+    redirect(`/Account/Signin?redirect=/Pazza/Class/${cid}/Posts/${pid}`);
 
   async function fetchPost() {
     const post = await client.getPost(pid as string);
@@ -57,7 +62,21 @@ export default function Posts() {
 
   const editAnswer = () => {};
 
-  const createFollowup = () => {};
+  const createFollowup = async () => {
+    const newFollowup = await client.createFollowupToPost(
+      pid as string,
+      followup
+    );
+    setFollowup({ details: "" }); 
+    
+    dispatch(
+      setPost({
+        ...post,
+        follow_ups: [...(post?.follow_ups ?? []), newFollowup],
+      })
+    );
+    console.log("folloup", newFollowup);
+  };
 
   const createReplyToFollowup = () => {};
 
@@ -80,21 +99,23 @@ export default function Posts() {
         <div className="d-flex">
           {" "}
           <div className="qv-container">Views : {views}</div>
-          <div>
-            <Dropdown className="actions-dropdown">
-              <DropdownToggle variant="light">Actions</DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem>Edit</DropdownItem>
-                <DropdownItem>Delete</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
+          {(isInstr || currentUser?._id === post?.author?._id) && (
+            <div>
+              <Dropdown className="actions-dropdown">
+                <DropdownToggle variant="light">Actions</DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem>Edit</DropdownItem>
+                  <DropdownItem>Delete</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          )}
         </div>
       </div>
 
       <div>
         <h6 id="posts-author">
-          {/* Updated by {post?.author} on{" "} */}
+          Updated by {post?.author?.firstName} {post?.author?.lastName} on{" "}
           <span className="timestamp"> {post?.timestamp?.slice(0, 10)}</span>
         </h6>
       </div>
@@ -104,16 +125,22 @@ export default function Posts() {
       {!showEdit && <div className="posts-title">{post?.summary} </div>}
       {showEdit && (
         <div className="editor-wrapper mb-5">
+          <h4>Title</h4>
           <CustomEditor post={post} content="summary" />
         </div>
       )}
       {!showEdit && <div className="posts-description">{post?.details}</div>}
 
-      {showEdit && <CustomEditor post={post} content="details" />}
+      {showEdit && (
+        <>
+          <h4>Details</h4>
+          <CustomEditor post={post} content="details" />
+        </>
+      )}
       <hr />
       <div className="d-flex">
         <div className="folder-name">Folder Name</div>
-        {!showEdit && isInstr && (
+        {!showEdit && (isInstr || currentUser?._id === post?.author?._id) && (
           <Button className="edit-button " onClick={() => editPost()}>
             Edit
           </Button>
@@ -344,6 +371,24 @@ export default function Posts() {
               </div>
             );
           })}
+        </div>
+        <div className="followup-textbox">
+          <Form>
+            <FormControl
+              type="text"
+              placeholder="Compose a Followup Discussion here!"
+              onChange={(e) => {
+                setFollowup({ ...followup, details: e.target.value });
+              }}
+              onKeyDown={async (e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  await createFollowup();
+                  
+                }
+              }}
+            />
+          </Form>
         </div>
       </div>
     </div>
