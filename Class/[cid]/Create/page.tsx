@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter, useParams } from "next/navigation";
 import Editor from "react-simple-wysiwyg";
 import {
   Container,
@@ -24,11 +25,14 @@ import {
   setSummary,
   setDetails,
   setSendEmailNotifications,
+  setPosterName,
+  setIsPrivate,
   setErrors,
   clearFieldError,
-  addPost,
   resetForm,
 } from "./reducer";
+import { addPost as addPostToClassReducer } from "../reducer";
+import {createPost} from "../client";
 
 type PostType = "question" | "note" | "poll";
 type PostTo = "entire-class" | "individual";
@@ -46,8 +50,13 @@ interface Folder {
 
 export default function NewPostScreen() {
   const dispatch = useDispatch();
+  const { cid } = useParams();
+  const router = useRouter();
   const { formData, errors } = useSelector(
     (state: storeType) => state.newPostReducer
+  );
+  const { currentUser } = useSelector(
+    (state: storeType) => state.accountReducer
   );
 
   const users: User[] = [
@@ -109,25 +118,36 @@ export default function NewPostScreen() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!validateForm()) {
       return;
     }
 
     const postData = {
-      id: Date.now().toString(),
-      postType: formData.postType as PostType,
-      postTo: formData.postTo as PostTo,
-      selectedUsers:
+      post_type: formData.postType.toUpperCase() as "QUESTION" | "NOTE" | "POLL",
+      post_to: formData.postTo,
+      selected_users:
         formData.postTo === "individual" ? formData.selectedUsers : [],
-      selectedFolders: formData.selectedFolders,
+      folder: formData.selectedFolders[0],
       summary: formData.summary,
       details: formData.details,
-      sendEmailNotifications: formData.sendEmailNotifications,
+      send_email_notifications: formData.sendEmailNotifications,
+      author_name: formData.userName,
+      is_private: formData.isPrivate,
+      course: Array.isArray(cid) ? cid[0] : cid,
+      timestamp: new Date().toISOString(),
+      read_by: [],
     };
 
-    dispatch(addPost(postData));
-    dispatch(resetForm());
+    try {
+      const response = await createPost(postData);
+      dispatch(addPostToClassReducer(response));
+      dispatch(resetForm());
+      router.push(`/Pazza/Class/${cid}`);
+    } catch (error) {
+      console.error("Error creating post:", error);
+      alert("Failed to create post. Please try again.");
+    }
   };
 
   const handleCancel = () => {
@@ -416,7 +436,29 @@ export default function NewPostScreen() {
           <Form.Label className="fw-bold mb-0">Show my name as</Form.Label>
         </Col>
         <Col xs={12} md={8}>
-          {/* Add form control here if needed */}
+          <Form.Group>
+            <Form.Select
+              value={formData.userName}
+              onChange={(e) => {
+                const selectedValue = e.target.value;
+                dispatch(setPosterName(selectedValue));
+                const isPrivate = selectedValue === "Anonymous";
+                dispatch(setIsPrivate(isPrivate));
+              }}
+            >
+              {currentUser && (
+                <option value={`${currentUser.firstName} ${currentUser.lastName}`}>
+                  {currentUser.firstName} {currentUser.lastName}
+                </option>
+              )}
+              <option value="Anonymous">Anonymous</option>
+            </Form.Select>
+            <Form.Text className="d-block mt-2 text-muted small">
+              {formData.isPrivate
+                ? "Your name is hidden from classmates"
+                : "Your name is visible to classmates"}
+            </Form.Text>
+          </Form.Group>
         </Col>
       </Row>
 
