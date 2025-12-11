@@ -1,4 +1,43 @@
 .pazza-folder-bar {
-    border-bottom-left-radius: 40px;
-    border-bottom-right-radius: 40px;
+  background-color: #1a4d7a;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  padding: 0.5rem 0.75rem;
+  white-space: nowrap;
+  height: 30px;
+}
+
+/* each folder pill */
+.folder-chip {
+  padding: 0.1rem 0.5rem;
+  border-color: #ffffff;
+  background-color: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-width 0.15s ease;
+}
+
+.folder-chip:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.folder-chip-active {
+  border-width: 2px;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.folder-chip__label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.folder-chip__count {
+  display: inline-block;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.4rem;
+  text-align: center;
+  background-color: #ffffff;
+  color: #1a4d7a;
 }

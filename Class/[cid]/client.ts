@@ -18,6 +18,11 @@ export async function createPost(post: Partial<Posts>) {
     return newPost.data;
 }
 
+export async function getPostsForFilter(courseId: string, folderId: string) {
+    const posts = await axios.get(`${PAZZA_API}/${courseId}/folders/${folderId}`);
+    return posts.data;
+}
+
 
 //-----------------------------
 // ******************************
@@ -65,6 +70,11 @@ export async function editAnswer(answerId: string, answer: Answer) {
         answer
     );
     return newAnswer.data;
+}
+
+export async function getFolders() {
+    const folders = await axios.get(`${PAZZA_API}/folders`);
+    return folders.data;
 }
 
 

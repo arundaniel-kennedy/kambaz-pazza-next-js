@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { storeType } from "../../store";
 import { toggleSidebar } from "./reducer";
 import { VscTriangleLeft, VscTriangleRight } from "react-icons/vsc";
+import FilterBar from "./Folders/page";
 
 export default function ClassLayout({
   children,
@@ -38,8 +39,8 @@ export default function ClassLayout({
         )}
       </div>
       <div className="rightside-wrapper">
-        <div className="folder-filter-wrapper">
-          <FolderFilter />
+        <div className=" mb-3">
+          <FilterBar />
         </div>
         <div className="content-wrapper">{children}</div>
       </div>

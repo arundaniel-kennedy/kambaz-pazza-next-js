@@ -33,6 +33,8 @@ import {
 } from "./reducer";
 import { addPost as addPostToClassReducer } from "../reducer";
 import {createPost} from "../client";
+import FilterBar from "../Folders/page";
+import Link from "next/link";
 
 type PostType = "question" | "note" | "poll";
 type PostTo = "entire-class" | "individual";
@@ -163,7 +165,9 @@ export default function NewPostScreen() {
   return (
     <div>
       <div className="d-flex justify-contents-between  gap-2">
+        <Link href={`/Pazza/Class/${cid}`}>
         <IoArrowBackOutline className="text-primary fs-3  " />
+        </Link>
         <FaPlusCircle className="bg-white fs-5" />
         <h5>Create New Post</h5>
       </div>
