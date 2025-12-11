@@ -180,7 +180,7 @@ export default function Sidebar() {
                                 <ListGroupItem
                                   className={`post-item 
                                     ${pathname.includes(`${post._id}`) ? " bg-primary-subtle" : ""}
-                                    ${!post.read_by?.includes(currentUser._id ?? "") ? " unread" : ""}
+                                    ${!post.read_by?.includes(currentUser?._id ?? "") ? " unread" : ""}
                                   `}
                                 >
                                   <div className="post-time float-end">
