@@ -86,7 +86,10 @@ export default function Posts() {
                                     Actions
                                 </DropdownToggle>
                                 <DropdownMenu>
-                                    <DropdownItem>Edit</DropdownItem>
+                                    <DropdownItem
+                                    onClick={()=>{
+                                        setShowEdit(!showEdit)
+                                    }}>Edit</DropdownItem>
                                     <DropdownItem
                                         onClick={() =>
                                             setShowDeleteConfirm(true)
@@ -216,7 +219,16 @@ export default function Posts() {
 
             <hr />
 
-            {!showEdit && <div className="posts-title">{post?.summary} </div>}
+            {!showEdit && (
+                <div
+                    dangerouslySetInnerHTML={{
+                        __html: post?.summary || "",
+                    }}
+                    className="posts-title"
+                >
+                   
+                </div>
+            )}
             {showEdit && (
                 <div className="editor-wrapper mb-5">
                     <h4>Title</h4>
@@ -224,7 +236,14 @@ export default function Posts() {
                 </div>
             )}
             {!showEdit && (
-                <div className="posts-description">{post?.details}</div>
+                <div
+                    dangerouslySetInnerHTML={{
+                        __html: post?.details || "",
+                    }}
+                    className="posts-description"
+                >
+                    
+                </div>
             )}
 
             {showEdit && (
