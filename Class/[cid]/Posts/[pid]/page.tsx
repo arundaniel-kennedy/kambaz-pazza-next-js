@@ -102,7 +102,7 @@ export default function Posts() {
                         </div>
                     )}
 
-                    <div>
+                    {/* <div>
                         <h6 id="posts-author">
                             Updated by {post?.author?.firstName}{" "}
                             {post?.author?.lastName} on{" "}
@@ -111,9 +111,9 @@ export default function Posts() {
                                 {post?.timestamp?.slice(0, 10)}
                             </span>
                         </h6>
-                    </div>
+                    </div> */}
 
-                    <hr />
+                    {/* <hr />
 
                     {!showEdit && (
                         <div
@@ -187,7 +187,7 @@ export default function Posts() {
                         </>
                     )}
                     <hr />
-                    <Followup post={post ?? {}} />
+                    <Followup post={post ?? {}} /> */}
                 </div>
             </div>
 
@@ -238,7 +238,7 @@ export default function Posts() {
             )}
             <hr />
             <div className="d-flex">
-                <div className="folder-name">Folder Name</div>
+                <div className="folder-name">{post?.folder?.name}</div>
                 {!showEdit &&
                     (isInstr || currentUser?._id === post?.author?._id) && (
                         <Button
