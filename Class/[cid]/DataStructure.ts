@@ -15,7 +15,7 @@ export type Posts = {
   views?: number;
   student_answer?: Answer;
   instructor_answer?: Answer;
-  read_by?: string[] | User[];
+  read_by?: string[];
 };
 export type FollowUp = {
   _id?: string;

@@ -68,7 +68,7 @@ export default function Sidebar() {
     );
 
     // 2. Sort Descending
-    filtered.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    filtered.sort((a, b) => new Date(b.timestamp ?? "").getTime() - new Date(a.timestamp ?? "").getTime());
 
     // 3. Group
     const groups: Record<string, typeof posts> = {};
@@ -82,7 +82,7 @@ export default function Sidebar() {
     lastWeekStart.setDate(lastWeekStart.getDate() - 7);
 
     filtered.forEach((post) => {
-      const postDate = new Date(post.timestamp);
+      const postDate = new Date(post.timestamp ?? "");
       // Normalize post date to midnight for comparison
       const postDateMidnight = new Date(postDate.getFullYear(), postDate.getMonth(), postDate.getDate());
 
@@ -180,11 +180,11 @@ export default function Sidebar() {
                                 <ListGroupItem
                                   className={`post-item 
                                     ${pathname.includes(`${post._id}`) ? " bg-primary-subtle" : ""}
-                                    ${isUnread ? " unread" : ""}
+                                    ${!post.read_by?.includes(currentUser._id ?? "") ? " unread" : ""}
                                   `}
                                 >
                                   <div className="post-time float-end">
-                                    {new Date(post.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    {new Date(post.timestamp ?? "").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                   </div>
                                   
                                   <div className={`posts-title ${!post.read_by?.includes(currentUser?._id) ? "fw-bold" : ""}`}>

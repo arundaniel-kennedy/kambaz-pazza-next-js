@@ -45,14 +45,29 @@ const classSlice = createSlice({
     toggleSidebar: (state, action) => {
       state.showSidebar = action.payload;
     },
+
     setPostUsingId: (state, { payload: postId }) => {
       state.post = state.posts.find((p) => p._id === postId);
     },
+
     setPost: (state, { payload: post }) => {
       state.post = post
+    },
+
+    updateReadBy: (state, { payload }) => {
+      state.posts = state.posts.map((p: any) => {
+        if (p._id === payload.pid) {
+          if (!p.read_by?.includes(payload.uid)) {
+            p.read_by?.push(payload.uid);
+          }
+          return p;
+        } else {
+          return p;
+        }
+      });
     }
   },
 });
-export const { getPostsFromClass, toggleSidebar, setPosts, addPost, setPost, setPostUsingId } =
+export const { getPostsFromClass, toggleSidebar, setPosts, addPost, setPost, setPostUsingId, updateReadBy } =
   classSlice.actions;
 export default classSlice.reducer;

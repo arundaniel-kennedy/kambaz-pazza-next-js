@@ -20,23 +20,23 @@ export async function createPost(post: Partial<Posts>) {
 }
 
 export async function getPostsForFilter(courseId: string, folderId: string) {
-    const posts = await axios.get(`${PAZZA_API}/${courseId}/folders/${folderId}`);
+    const posts = await axiosWithCredentials.get(`${PAZZA_API}/${courseId}/folders/${folderId}`);
     return posts.data;
 }
 
 export async function getAllInstructors() {
     const role = "FACULTY";
-    const { data: instructors } = await axios.get(`${USERS_API}?role=${role}`);
+    const { data: instructors } = await axiosWithCredentials.get(`${USERS_API}?role=${role}`);
     return instructors;
 }
 
 export async function getInstructorsForCourse(courseId: string) {
-    const { data: instructors } = await axios.get(`${USERS_API}/instructors/${courseId}`);
+    const { data: instructors } = await axiosWithCredentials.get(`${USERS_API}/instructors/${courseId}`);
     return instructors;
 }
 
 export async function getEveryone() {
-    const { data: users } = await axios.get(`${USERS_API}`);
+    const { data: users } = await axiosWithCredentials.get(`${USERS_API}`);
     return users;
 }
 
@@ -48,12 +48,12 @@ export async function getEveryone() {
 
 // ************** Direct post operations ****************
 export async function getAllPostsForCourse(courseId: string) {
-    const posts = await axios.get(`${PAZZA_API}/${courseId}/posts`);
+    const posts = await axiosWithCredentials.get(`${PAZZA_API}/${courseId}/posts`);
     return posts.data;
 }
 
 export async function getPost(postId: string) {
-    const post = await axios.get(`${POSTS_API}/${postId}`);
+    const post = await axiosWithCredentials.get(`${POSTS_API}/${postId}`);
     // console.log("This is client post",post.data);
     return post.data;
 }

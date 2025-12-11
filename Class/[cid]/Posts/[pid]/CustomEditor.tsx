@@ -18,7 +18,7 @@ export default function CustomEditor({
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <div className="bg-white rounded">
       {" "}
       {content === "summary" && (
         <Editor

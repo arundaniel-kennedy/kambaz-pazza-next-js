@@ -7,22 +7,16 @@ import {
     DropdownItem,
     DropdownMenu,
     DropdownToggle,
-    Form,
-    FormCheck,
-    FormControl,
 } from "react-bootstrap";
 import "./posts.scss";
 import { useDispatch, useSelector } from "react-redux";
 
-import type { FollowUp, Posts } from "../../DataStructure";
-import { setPost } from "../../reducer";
-import { FaRegComment, FaUser } from "react-icons/fa6";
-import { TbLetterISmall, TbLetterS } from "react-icons/tb";
+import type { Posts } from "../../DataStructure";
+import { setPost, updateReadBy } from "../../reducer";
 import CustomEditor from "./CustomEditor";
-import { HiOutlineReply } from "react-icons/hi";
 import * as client from "../../client";
-import { storeType } from "@/app/Pazza/store";
-import { RootState } from "@/app/(Kambaz)/store";
+import { storeType } from "../../../../store";
+import { RootState } from "../../../../../(Kambaz)/store";
 import StudentAnswer from "./StudentAnswer";
 import InstructorAnswer from "./InstructorAnswer";
 import Followup from "./Followup";
@@ -51,6 +45,9 @@ export default function Posts() {
         const post = await client.getPost(pid as string);
         console.log("Post data: " + pid, post);
         dispatch(setPost(post));
+        dispatch(
+            updateReadBy({ uid: currentUser?._id ?? "", pid: pid as string })
+        );
     }
 
     //Screen load
