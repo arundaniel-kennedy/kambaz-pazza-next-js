@@ -47,6 +47,7 @@ export default function Posts() {
 
     async function fetchPost() {
         const post = await client.getPost(pid as string);
+        console.log("Post data: " + pid, post)
         dispatch(setPost(post));
     }
 
@@ -68,7 +69,7 @@ export default function Posts() {
         <div className="post-screen-wrapper">
             <div className="d-flex justify-content-between align-items-center question-views-wrapper">
                 <div className="qv-container">
-                    {post?.post_type} @ {pid}{" "}
+                    {post?.post_type} @ {pid}
                 </div>{" "}
                 <div className="d-flex">
                     <div className="qv-container">Views : {views}</div>
@@ -110,14 +111,14 @@ export default function Posts() {
                 />
             )}
             {showEdit && (
-                <div className="editor-wrapper mb-5">
+                <div className="editor-wrapper mb-3">
                     <h4>Title</h4>
                     <CustomEditor post={post} content="summary" />
                 </div>
             )}
             {!showEdit && (
                 <div
-                    className="posts-title"
+                    className="posts-description"
                     dangerouslySetInnerHTML={{ __html: post?.details || "" }}
                 />
             )}
@@ -130,11 +131,11 @@ export default function Posts() {
             )}
             <hr />
             <div className="d-flex">
-                <div className="folder-name">Folder Name</div>
+                <div className="folder-name">{post?.folder?.name}</div>
                 {!showEdit &&
                     (isInstr || currentUser?._id === post?.author?._id) && (
                         <Button
-                            className="edit-button "
+                            className="edit-button"
                             onClick={() => editPost()}
                         >
                             Edit

@@ -7,7 +7,7 @@ export type Posts = {
   is_anonymous?: boolean;
   course?: string;
   author?: User;
-  folder?: string;
+  folder?: Folder;
   summary?: string;
   details?: string;
   follow_ups?: FollowUp[];
@@ -15,7 +15,7 @@ export type Posts = {
   views?: number;
   student_answer?: Answer;
   instructor_answer?: Answer;
-  read_by?:string[]|User[];
+  read_by?: string[] | User[];
 };
 export type FollowUp = {
   _id?: string;
@@ -39,3 +39,9 @@ export type Answer = {
   details: string;
   timestamp: string;
 };
+
+export type Folder = {
+  _id?: string;
+  name: string;
+  course?: string;
+}
