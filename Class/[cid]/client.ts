@@ -73,6 +73,12 @@ export async function editPost(postId: string | undefined, postUpdates: Posts) {
     return updatedPost.data;
 }
 
+export async function deletePost(postId: string | undefined) {
+    await axiosWithCredentials.delete(
+        `${POSTS_API}/${postId}`
+    );
+}
+
 // ************** Post answer operations ****************
 export async function createAnswerToPost(postId: string, answer: Answer) {
     const newAnswer = await axiosWithCredentials.post(

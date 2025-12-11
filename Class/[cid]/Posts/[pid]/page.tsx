@@ -31,9 +31,11 @@ export default function Posts() {
   //All const declarations
 
   const [showEdit, setShowEdit] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { cid, pid } = useParams();
   const { post } = useSelector((state: storeType) => state.classReducer);
   const dispatch = useDispatch();
+  const {posts} = useSelector((state: storeType) => state.classReducer);
 
   const isQuestion = post
     ? post.post_type === "QUESTION" || post.post_type === "POLL"
@@ -58,12 +60,23 @@ export default function Posts() {
   //All functions
   const editPost = () => setShowEdit(!showEdit);
 
+  const onDeletePost = async () => {
+    await client.deletePost(post?._id);
+    dispatch(
+      setPost(
+        posts.filter(p => p._id !== post?._id)
+      )
+    );
+    setShowDeleteConfirm(false);
+  };
+
   const views = post?.read_by?.length;
 
   const onUpdatePost = async (postUpdates: Posts) => {
     const updatedPost = await client.editPost(post?._id, postUpdates);
     dispatch(setPost(updatedPost as Posts));
   };
+
   return (
     <div className="post-screen-wrapper">
       <div className="d-flex justify-content-between align-items-center question-views-wrapper">
@@ -78,13 +91,21 @@ export default function Posts() {
                 <DropdownToggle variant="light">Actions</DropdownToggle>
                 <DropdownMenu>
                   <DropdownItem>Edit</DropdownItem>
-                  <DropdownItem>Delete</DropdownItem>
+                  <DropdownItem onClick={() => setShowDeleteConfirm(true)}>Delete</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </div>
           )}
         </div>
       </div>
+
+      {showDeleteConfirm && (
+        <div className="delete-confirm-modal">
+          <p>Are you sure you want to delete this post?</p>
+          <Button variant="danger" onClick={onDeletePost}>Confirm Delete</Button>
+          <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>Cancel</Button>
+        </div>
+      )}
 
       <div>
         <h6 id="posts-author">
