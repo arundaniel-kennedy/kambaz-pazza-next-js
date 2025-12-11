@@ -6,6 +6,7 @@ const axiosWithCredentials = axios.create({ withCredentials: true });
 
 const PAZZA_API = `${HTTP_SERVER}/api/pazza`;
 const POSTS_API = `${PAZZA_API}/posts`;
+const USERS_API = `${HTTP_SERVER}/api/users`;
 
 //All Post APIs
 // ******************************
@@ -22,6 +23,18 @@ export async function getPostsForFilter(courseId: string, folderId: string) {
     const posts = await axios.get(`${PAZZA_API}/${courseId}/folders/${folderId}`);
     return posts.data;
 }
+
+export async function getAllInstructors() {
+    const role = "FACULTY";
+    const { data: instructors } = await axios.get(`${USERS_API}?role=${role}`);
+    return instructors;
+}
+
+export async function getEveryone() {
+    const { data: users } = await axios.get(`${USERS_API}`);
+    return users;
+}
+
 
 
 //-----------------------------

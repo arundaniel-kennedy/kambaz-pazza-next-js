@@ -220,6 +220,7 @@ export default function NewPostScreen() {
                 id="postType-poll"
                 name="postType"
                 value="poll"
+                disabled
                 checked={formData.postType === "poll"}
                 onChange={(e) =>
                   dispatch(setPostType(e.target.value as PostType))
