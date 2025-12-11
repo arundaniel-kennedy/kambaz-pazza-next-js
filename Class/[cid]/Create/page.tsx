@@ -13,7 +13,7 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { FaPlusCircle } from "react-icons/fa";
+import { FaPlusCircle, FaTimes } from "react-icons/fa";
 import { IoArrowBackOutline } from "react-icons/io5";
 import filterData from "../../../../(Kambaz)/Database/filterData.json";
 import type { storeType } from "../../../store";
@@ -293,13 +293,10 @@ export default function NewPostScreen() {
                       return (
                         <Badge key={audienceId} bg="info" className="d-flex align-items-center gap-2">
                           {instructor?.firstName} {instructor?.lastName}
-                          <button
-                            type="button"
-                            className="bg-transparent border-0 text-white cursor-pointer"
+                          <FaTimes
                             onClick={() => handleRemoveAudience(audienceId)}
                           >
-                            
-                          </button>
+                          </FaTimes>
                         </Badge>
                       );
                     })}

@@ -31,9 +31,11 @@ export default function Posts() {
     //All const declarations
 
     const [showEdit, setShowEdit] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const { cid, pid } = useParams();
     const { post } = useSelector((state: storeType) => state.classReducer);
     const dispatch = useDispatch();
+    const { posts } = useSelector((state: storeType) => state.classReducer);
 
     const isQuestion = post
         ? post.post_type === "QUESTION" || post.post_type === "POLL"
@@ -47,7 +49,7 @@ export default function Posts() {
 
     async function fetchPost() {
         const post = await client.getPost(pid as string);
-        console.log("Post data: " + pid, post)
+        console.log("Post data: " + pid, post);
         dispatch(setPost(post));
     }
 
@@ -59,17 +61,24 @@ export default function Posts() {
     //All functions
     const editPost = () => setShowEdit(!showEdit);
 
+    const onDeletePost = async () => {
+        await client.deletePost(post?._id);
+        dispatch(setPost(posts.filter((p) => p._id !== post?._id)));
+        setShowDeleteConfirm(false);
+    };
+
     const views = post?.read_by?.length;
 
     const onUpdatePost = async (postUpdates: Posts) => {
         const updatedPost = await client.editPost(post?._id, postUpdates);
         dispatch(setPost(updatedPost as Posts));
     };
+
     return (
         <div className="post-screen-wrapper">
             <div className="d-flex justify-content-between align-items-center question-views-wrapper">
                 <div className="qv-container">
-                    {post?.post_type} @ {pid}
+                    {post?.post_type} @ {pid}{" "}
                 </div>{" "}
                 <div className="d-flex">
                     <div className="qv-container">Views : {views}</div>
@@ -80,16 +89,122 @@ export default function Posts() {
                                     Actions
                                 </DropdownToggle>
                                 <DropdownMenu>
-                                    <DropdownItem onClick={() => editPost()}>
-                                        Edit
+                                    <DropdownItem>Edit</DropdownItem>
+                                    <DropdownItem
+                                        onClick={() =>
+                                            setShowDeleteConfirm(true)
+                                        }
+                                    >
+                                        Delete
                                     </DropdownItem>
-                                    <DropdownItem>Delete</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         </div>
                     )}
+
+                    <div>
+                        <h6 id="posts-author">
+                            Updated by {post?.author?.firstName}{" "}
+                            {post?.author?.lastName} on{" "}
+                            <span className="timestamp">
+                                {" "}
+                                {post?.timestamp?.slice(0, 10)}
+                            </span>
+                        </h6>
+                    </div>
+
+                    <hr />
+
+                    {!showEdit && (
+                        <div
+                            className="posts-title"
+                            dangerouslySetInnerHTML={{
+                                __html: post?.summary || "",
+                            }}
+                        />
+                    )}
+                    {showEdit && (
+                        <div className="editor-wrapper mb-3">
+                            <h4>Title</h4>
+                            <CustomEditor post={post} content="summary" />
+                        </div>
+                    )}
+                    {!showEdit && (
+                        <div
+                            className="posts-description"
+                            dangerouslySetInnerHTML={{
+                                __html: post?.details || "",
+                            }}
+                        />
+                    )}
+
+                    {showEdit && (
+                        <>
+                            <h4>Details</h4>
+                            <CustomEditor post={post} content="details" />
+                        </>
+                    )}
+                    <hr />
+                    <div className="d-flex">
+                        <div className="folder-name">{post?.folder?.name}</div>
+                        {!showEdit &&
+                            (isInstr ||
+                                currentUser?._id === post?.author?._id) && (
+                                <Button
+                                    className="edit-button"
+                                    onClick={() => editPost()}
+                                >
+                                    Edit
+                                </Button>
+                            )}
+                        {showEdit && (
+                            <>
+                                <Button
+                                    className="ms-3 edit-button "
+                                    onClick={() => {
+                                        if (post) {
+                                            onUpdatePost(post);
+                                            editPost();
+                                        }
+                                    }}
+                                >
+                                    Submit
+                                </Button>
+                                <Button
+                                    className="ms-3 text-dark cancel-button"
+                                    onClick={() => editPost()}
+                                >
+                                    Cancel
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                    <hr />
+                    {isQuestion && (
+                        <>
+                            <StudentAnswer post={post ?? {}} />
+                            <InstructorAnswer post={post ?? {}} />
+                        </>
+                    )}
+                    <hr />
+                    <Followup post={post ?? {}} />
                 </div>
             </div>
+
+            {showDeleteConfirm && (
+                <div className="delete-confirm-modal">
+                    <p>Are you sure you want to delete this post?</p>
+                    <Button variant="danger" onClick={onDeletePost}>
+                        Confirm Delete
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setShowDeleteConfirm(false)}
+                    >
+                        Cancel
+                    </Button>
+                </div>
+            )}
 
             <div>
                 <h6 id="posts-author">
@@ -104,23 +219,15 @@ export default function Posts() {
 
             <hr />
 
-            {!showEdit && (
-                <div
-                    className="posts-title"
-                    dangerouslySetInnerHTML={{ __html: post?.summary || "" }}
-                />
-            )}
+            {!showEdit && <div className="posts-title">{post?.summary} </div>}
             {showEdit && (
-                <div className="editor-wrapper mb-3">
+                <div className="editor-wrapper mb-5">
                     <h4>Title</h4>
                     <CustomEditor post={post} content="summary" />
                 </div>
             )}
             {!showEdit && (
-                <div
-                    className="posts-description"
-                    dangerouslySetInnerHTML={{ __html: post?.details || "" }}
-                />
+                <div className="posts-description">{post?.details}</div>
             )}
 
             {showEdit && (
@@ -131,11 +238,11 @@ export default function Posts() {
             )}
             <hr />
             <div className="d-flex">
-                <div className="folder-name">{post?.folder?.name}</div>
+                <div className="folder-name">Folder Name</div>
                 {!showEdit &&
                     (isInstr || currentUser?._id === post?.author?._id) && (
                         <Button
-                            className="edit-button"
+                            className="edit-button "
                             onClick={() => editPost()}
                         >
                             Edit
