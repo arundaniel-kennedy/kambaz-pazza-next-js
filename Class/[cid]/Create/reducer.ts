@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 
 export type PostType = 'question' | 'note' | 'poll';
-export type PostTo = 'entire-class' | 'individual';
+export type PostTo = 'entire-class' | 'instructor';
 
 export interface Post {
   _id: string;
@@ -13,6 +13,8 @@ export interface Post {
   summary: string;
   details: string;
   sendEmailNotifications: boolean;
+  userName: string;
+  isPrivate: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -27,6 +29,8 @@ export interface NewPostState {
     summary: string;
     details: string;
     sendEmailNotifications: boolean;
+    userName: string;
+    isPrivate: boolean;
   };
   errors: {
     folders?: string;
@@ -43,6 +47,8 @@ const initialFormData = {
   summary: '',
   details: '',
   sendEmailNotifications: false,
+  userName: 'Anonymous',
+  isPrivate: true,
 };
 
 const initialState: NewPostState = {
@@ -120,6 +126,14 @@ const newPostSlice = createSlice({
       state.formData.sendEmailNotifications = payload;
     },
 
+    setPosterName: (state, { payload }: PayloadAction<string>) => {
+      state.formData.userName = payload;
+    },
+
+    setIsPrivate: (state, { payload }: PayloadAction<boolean>) => {
+      state.formData.isPrivate = payload;
+    },
+
     // Error handling actions
     setErrors: (state, { payload }: PayloadAction<NewPostState['errors']>) => {
       state.errors = payload;
@@ -188,6 +202,8 @@ export const {
   setSummary,
   setDetails,
   setSendEmailNotifications,
+  setPosterName,
+  setIsPrivate,
   setErrors,
   clearErrors,
   clearFieldError,

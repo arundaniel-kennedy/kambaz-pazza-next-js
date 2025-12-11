@@ -6,10 +6,39 @@ const axiosWithCredentials = axios.create({ withCredentials: true });
 
 const PAZZA_API = `${HTTP_SERVER}/api/pazza`;
 const POSTS_API = `${PAZZA_API}/posts`;
+const USERS_API = `${HTTP_SERVER}/api/users`;
 
 //All Post APIs
 // ******************************
 //(Ashwin)
+export async function createPost(post: Partial<Posts>) {
+    const newPost = await axiosWithCredentials.post(
+        `${POSTS_API}`,
+        post
+    );
+    return newPost.data;
+}
+
+export async function getPostsForFilter(courseId: string, folderId: string) {
+    const posts = await axios.get(`${PAZZA_API}/${courseId}/folders/${folderId}`);
+    return posts.data;
+}
+
+export async function getAllInstructors() {
+    const role = "FACULTY";
+    const { data: instructors } = await axios.get(`${USERS_API}?role=${role}`);
+    return instructors;
+}
+
+export async function getInstructorsForCourse(courseId: string) {
+    const { data: instructors } = await axios.get(`${USERS_API}/instructors/${courseId}`);
+    return instructors;
+}
+
+export async function getEveryone() {
+    const { data: users } = await axios.get(`${USERS_API}`);
+    return users;
+}
 
 
 
@@ -59,6 +88,11 @@ export async function editAnswer(answerId: string, answer: Answer) {
         answer
     );
     return newAnswer.data;
+}
+
+export async function getFolders() {
+    const folders = await axios.get(`${PAZZA_API}/folders`);
+    return folders.data;
 }
 
 

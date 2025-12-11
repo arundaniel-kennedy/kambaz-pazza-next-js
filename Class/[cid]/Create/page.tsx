@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter, useParams } from "next/navigation";
 import Editor from "react-simple-wysiwyg";
 import {
   Container,
@@ -24,49 +25,56 @@ import {
   setSummary,
   setDetails,
   setSendEmailNotifications,
+  setPosterName,
+  setIsPrivate,
   setErrors,
   clearFieldError,
-  addPost,
   resetForm,
 } from "./reducer";
+import { addPost as addPostToClassReducer } from "../reducer";
+import {createPost} from "../client";
+import { getInstructorsForCourse } from "../client";
+import Link from "next/link";
 
 type PostType = "question" | "note" | "poll";
-type PostTo = "entire-class" | "individual";
+type PostTo = "entire-class" | "instructor";
 
-interface User {
-  id: string;
-  name: string;
-  type: "instructor" | "student";
-}
 
-interface Folder {
-  id: string;
-  name: string;
-}
+
 
 export default function NewPostScreen() {
+  const [instructors, setInstructors] = useState<Array<{ _id: string; firstName: string; lastName: string }>>([]);
+  const [postAudience, setPostAudience] = useState<string[]>([]);
   const dispatch = useDispatch();
+  const { cid } = useParams();
+  const router = useRouter();
   const { formData, errors } = useSelector(
     (state: storeType) => state.newPostReducer
   );
+  const { currentUser } = useSelector(
+    (state: storeType) => state.accountReducer
+  );
 
-  const users: User[] = [
-    { id: "instructor1", name: "Instructor 1", type: "instructor" },
-    { id: "instructor2", name: "Instructor 2", type: "instructor" },
-    { id: "student1", name: "Student 1", type: "student" },
-    { id: "student2", name: "Student 2", type: "student" },
-    { id: "student3", name: "Student 3", type: "student" },
-  ];
+  const { items } = useSelector(
+    (state: storeType) => state.filter
+  );
 
-  const instructors = users.filter((u) => u.type === "instructor");
-  const allUsers = users;
-
-  const folders: Folder[] = (
-    filterData as Array<{ label: string; count?: number }>
-  ).map((item) => ({
-    id: item.label,
-    name: item.label,
+  const folders = items.map((item) => ({
+    id: item._id,
+    name: item.name,
   }));
+
+  useEffect(() => {
+    const fetchInstructors = async () => {
+      try {
+        const data = await getInstructorsForCourse(cid as string);
+        setInstructors(data);
+      } catch (error) {
+        console.error("Error fetching instructors:", error);
+      }
+    };
+    fetchInstructors();
+  }, [cid]);
 
   const handleFolderToggle = (folderId: string) => {
     dispatch(toggleSelectedFolder(folderId));
@@ -109,25 +117,36 @@ export default function NewPostScreen() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!validateForm()) {
       return;
     }
 
     const postData = {
-      id: Date.now().toString(),
-      postType: formData.postType as PostType,
-      postTo: formData.postTo as PostTo,
-      selectedUsers:
-        formData.postTo === "individual" ? formData.selectedUsers : [],
-      selectedFolders: formData.selectedFolders,
+      post_type: formData.postType.toUpperCase() as "QUESTION" | "NOTE" | "POLL",
+      post_to: formData.postTo,
+      selected_users:
+        formData.postTo === "instructor" ? formData.selectedUsers : [],
+      folder: formData.selectedFolders[0],
       summary: formData.summary,
       details: formData.details,
-      sendEmailNotifications: formData.sendEmailNotifications,
+      send_email_notifications: formData.sendEmailNotifications,
+      author_name: formData.userName,
+      is_private: formData.isPrivate,
+      course: Array.isArray(cid) ? cid[0] : cid,
+      timestamp: new Date().toISOString(),
+      read_by: [],
     };
 
-    dispatch(addPost(postData));
-    dispatch(resetForm());
+    try {
+      const response = await createPost(postData);
+      dispatch(addPostToClassReducer(response));
+      dispatch(resetForm());
+      router.push(`/Pazza/Class/${cid}`);
+    } catch (error) {
+      console.error("Error creating post:", error);
+      alert("Failed to create post. Please try again.");
+    }
   };
 
   const handleCancel = () => {
@@ -140,10 +159,22 @@ export default function NewPostScreen() {
     return "Post";
   };
 
+  const handleAddAudience = (instructorId: string) => {
+    if (!postAudience.includes(instructorId)) {
+      setPostAudience([...postAudience, instructorId]);
+    }
+  };
+
+  const handleRemoveAudience = (instructorId: string) => {
+    setPostAudience(postAudience.filter((id) => id !== instructorId));
+  };
+
   return (
     <div>
       <div className="d-flex justify-contents-between  gap-2">
+        <Link href={`/Pazza/Class/${cid}`}>
         <IoArrowBackOutline className="text-primary fs-3  " />
+        </Link>
         <FaPlusCircle className="bg-white fs-5" />
         <h5>Create New Post</h5>
       </div>
@@ -196,6 +227,7 @@ export default function NewPostScreen() {
                 id="postType-poll"
                 name="postType"
                 value="poll"
+                disabled
                 checked={formData.postType === "poll"}
                 onChange={(e) =>
                   dispatch(setPostType(e.target.value as PostType))
@@ -232,50 +264,53 @@ export default function NewPostScreen() {
               />
               <Form.Check
                 type="radio"
-                id="postTo-individual"
+                id="postTo-instructor"
                 name="postTo"
                 value="instructor"
                 label="Instructor(s)"
-                checked={formData.postTo === "individual"}
+                checked={formData.postTo === "instructor"}
                 onChange={(e) => dispatch(setPostTo(e.target.value as PostTo))}
               />
               {/* User Selection Control */}
-              {formData.postTo === "individual" && (
-                <div className="ms-3 border rounded p-2 bg-light mt-2">
-                  <div className="mb-2">
-                    <Form.Label className="fw-medium small">
-                      Instructors
-                    </Form.Label>
-                    <div className="d-flex flex-row gap-1">
-                      {instructors.map((user) => (
-                        <Form.Check
-                          key={user.id}
-                          type="checkbox"
-                          id={`user-${user.id}`}
-                          label={<small>{user.name}</small>}
-                          checked={formData.selectedUsers.includes(user.id)}
-                          onChange={() => handleUserToggle(user.id)}
-                        />
-                      ))}
-                    </div>
+              {formData.postTo === "instructor" && (
+                <div>
+                  <Form.Select onChange={(e) => {
+                    if (e.target.value) {
+                      handleAddAudience(e.target.value);
+                      e.target.value = "";
+                    }
+                  }}>
+                    <option value="">Select an instructor...</option>
+                    {instructors.map((instructor) => (
+                      <option key={instructor._id} value={instructor._id}>
+                        {instructor.firstName} {instructor.lastName}
+                      </option>
+                    ))}
+                  </Form.Select>
+                  <div className="mt-2 d-flex flex-wrap gap-2">
+                    {postAudience.map((audienceId) => {
+                      const instructor = instructors.find((i) => i._id === audienceId);
+                      return (
+                        <Badge key={audienceId} bg="info" className="d-flex align-items-center gap-2">
+                          {instructor?.firstName} {instructor?.lastName}
+                          <button
+                            type="button"
+                            className="bg-transparent border-0 text-white cursor-pointer"
+                            onClick={() => handleRemoveAudience(audienceId)}
+                          >
+                            
+                          </button>
+                        </Badge>
+                      );
+                    })}
                   </div>
-                  <div>
-                    <Form.Label className="fw-medium small">
-                      All Users
-                    </Form.Label>
-                    <div className="d-flex flex-row gap-1">
-                      {allUsers.map((user) => (
-                        <Form.Check
-                          key={user.id}
-                          type="checkbox"
-                          id={`user-all-${user.id}`}
-                          label={<small>{user.name}</small>}
-                          checked={formData.selectedUsers.includes(user.id)}
-                          onChange={() => handleUserToggle(user.id)}
-                        />
-                      ))}
-                    </div>
-                  </div>
+                </div>
+              )}
+              {formData.postTo === "entire-class" && (
+                <div>
+                  <Form.Text className="text-muted small">
+                    This post will be visible to all students in the class.
+                  </Form.Text>
                 </div>
               )}
             </div>
@@ -416,7 +451,29 @@ export default function NewPostScreen() {
           <Form.Label className="fw-bold mb-0">Show my name as</Form.Label>
         </Col>
         <Col xs={12} md={8}>
-          {/* Add form control here if needed */}
+          <Form.Group>
+            <Form.Select
+              value={formData.userName}
+              onChange={(e) => {
+                const selectedValue = e.target.value;
+                dispatch(setPosterName(selectedValue));
+                const isPrivate = selectedValue === "Anonymous";
+                dispatch(setIsPrivate(isPrivate));
+              }}
+            >
+              {currentUser && (
+                <option value={`${currentUser.firstName} ${currentUser.lastName}`}>
+                  {currentUser.firstName} {currentUser.lastName}
+                </option>
+              )}
+              <option value="Anonymous">Anonymous</option>
+            </Form.Select>
+            <Form.Text className="d-block mt-2 text-muted small">
+              {formData.isPrivate
+                ? "Your name is hidden from classmates"
+                : "Your name is visible to classmates"}
+            </Form.Text>
+          </Form.Group>
         </Col>
       </Row>
 
