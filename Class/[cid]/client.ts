@@ -10,7 +10,13 @@ const POSTS_API = `${PAZZA_API}/posts`;
 //All Post APIs
 // ******************************
 //(Ashwin)
-
+export async function createPost(post: Partial<Posts>) {
+    const newPost = await axiosWithCredentials.post(
+        `${POSTS_API}`,
+        post
+    );
+    return newPost.data;
+}
 
 
 //-----------------------------
