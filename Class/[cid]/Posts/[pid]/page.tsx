@@ -272,9 +272,9 @@ export default function Posts() {
                 <>
                     <StudentAnswer post={post ?? {}} />
                     <InstructorAnswer post={post ?? {}} />
+                    <hr />
                 </>
             )}
-            <hr />
             <Followup post={post ?? {}} />
         </div>
     );
