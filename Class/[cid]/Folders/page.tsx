@@ -35,7 +35,7 @@ export default function FilterBar() {
   async function handleFolderClick(index: number, item: any) {
     dispatch(setSelectedIndex(index));
     try {
-      const posts = await getPostsForFilter(item.name, cid as string);
+      const posts = await getPostsForFilter(cid as string, item._id);
       dispatch(setPosts(posts));
     } catch (err) {
       console.error("Failed to fetch posts for folder", err);

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 
 export type PostType = 'question' | 'note' | 'poll';
-export type PostTo = 'entire-class' | 'individual';
+export type PostTo = 'entire-class' | 'instructor';
 
 export interface Post {
   _id: string;

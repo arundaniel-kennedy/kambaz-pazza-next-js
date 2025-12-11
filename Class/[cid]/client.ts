@@ -30,6 +30,11 @@ export async function getAllInstructors() {
     return instructors;
 }
 
+export async function getInstructorsForCourse(courseId: string) {
+    const { data: instructors } = await axios.get(`${USERS_API}/instructors/${courseId}`);
+    return instructors;
+}
+
 export async function getEveryone() {
     const { data: users } = await axios.get(`${USERS_API}`);
     return users;
