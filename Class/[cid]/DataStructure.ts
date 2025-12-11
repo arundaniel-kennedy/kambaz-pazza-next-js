@@ -34,10 +34,10 @@ export type Replies = {
 };
 
 export type Answer = {
-  _id: string;
-  author: User;
+  _id?: string;
+  author?: User;
   details: string;
-  timestamp: string;
+  timestamp?: string;
 };
 
 export type Folder = {

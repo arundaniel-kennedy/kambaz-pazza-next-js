@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SetStateAction } from "react";
 import Editor from "react-simple-wysiwyg";
 import { setPost } from "../../reducer";
 import { Posts } from "../../DataStructure";
@@ -7,9 +7,13 @@ import { useDispatch } from "react-redux";
 export default function CustomEditor({
   post,
   content,
+  value,
+  onChangeF
 }: {
   post?: Posts;
   content?: string;
+  value?: string;
+  onChangeF?: (value: string) => void;
 }) {
   const dispatch = useDispatch();
 
@@ -30,6 +34,12 @@ export default function CustomEditor({
           onChange={(e) => {
             dispatch(setPost({ ...post, details: e.target.value }));
           }}
+        />
+      )}
+      {content === "custom" && (
+        <Editor
+          value={`${value}`}
+          onChange={(e) => onChangeF && onChangeF(e.target.value)}
         />
       )}
       {!content && (

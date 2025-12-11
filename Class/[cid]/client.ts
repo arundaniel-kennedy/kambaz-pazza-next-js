@@ -80,9 +80,17 @@ export async function deletePost(postId: string | undefined) {
 }
 
 // ************** Post answer operations ****************
-export async function createAnswerToPost(postId: string, answer: Answer) {
+export async function createStudentAnswerToPost(postId: string, answer: Answer) {
     const newAnswer = await axiosWithCredentials.post(
-        `${POSTS_API}/${postId}/answer`,
+        `${POSTS_API}/${postId}/student_answer`,
+        answer
+    );
+    return newAnswer.data;
+}
+
+export async function createInstructorAnswerToPost(postId: string, answer: Answer) {
+    const newAnswer = await axiosWithCredentials.post(
+        `${POSTS_API}/${postId}/instructor_answer`,
         answer
     );
     return newAnswer.data;
