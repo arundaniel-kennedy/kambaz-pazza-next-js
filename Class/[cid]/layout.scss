@@ -27,6 +27,7 @@
       width: calc(100% - var(--sidebar-size));
       height: var(--folder-filter);
     }
+    
     .content-wrapper {
       height: calc(100% - var(--folder-filter) - 22px);
       overflow-y: auto;

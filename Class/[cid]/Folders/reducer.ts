@@ -1,9 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import filterData from '../../../../(Kambaz)/Database/filterData.json';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface FilterItem {
-  label: string;
+  _id: string;
+  name: string;
+  course: string;
   count?: number;
+  __v?: number;
 }
 
 interface FilterState {
@@ -12,19 +14,25 @@ interface FilterState {
 }
 
 const initialState: FilterState = {
-  items: filterData as FilterItem[],
+  items: [],           
   selectedIndex: null,
 };
 
 const filterSlice = createSlice({
-  name: 'filter',
+  name: "filter",
   initialState,
   reducers: {
+    setFolders: (state, {payload:folders}) => {
+      state.items = folders;
+    },
     setSelectedIndex: (state, action: PayloadAction<number | null>) => {
       state.selectedIndex = action.payload;
     },
-    updateFilterCount: (state, action: PayloadAction<{ label: string; count: number }>) => {
-      const item = state.items.find(item => item.label === action.payload.label);
+    updateFilterCount: (
+      state,
+      action: PayloadAction<{ id: string; count: number }>
+    ) => {
+      const item = state.items.find(i => i._id === action.payload.id);
       if (item) {
         item.count = action.payload.count;
       }
@@ -32,7 +40,8 @@ const filterSlice = createSlice({
   },
 });
 
-export const { setSelectedIndex, updateFilterCount } = filterSlice.actions;
+export const { setFolders, setSelectedIndex, updateFilterCount } =
+  filterSlice.actions;
+
 export default filterSlice.reducer;
 export type { FilterState };
-

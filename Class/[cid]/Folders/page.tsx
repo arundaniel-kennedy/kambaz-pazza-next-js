@@ -1,42 +1,63 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { storeType } from "../../../store";
-import { setSelectedIndex } from "./reducer";
-
+import { setFolders, setSelectedIndex } from "./reducer";
+import { setPosts } from "../reducer";
+import {getPostsForFilter,getFolders} from "../client"
 import "./page.scss";
+import { useParams } from "next/navigation";
 
 export default function FilterBar() {
-  const items = useSelector((state: storeType) => state.filter.items);
+  
   const selectedIndex = useSelector(
     (state: storeType) => state.filter.selectedIndex
   );
   const dispatch = useDispatch();
+  const { cid } = useParams();
+  useEffect(() => {
+    async function fetchFolders() {
+      try {
+        const folders = await getFolders(); 
+        console.log("folders from API", folders);
+        dispatch(setFolders(folders));
+      } catch (err) {
+        console.error("Failed to fetch folders", err);
+        dispatch(setFolders([]));
+      }
+    }
+    fetchFolders();
+  }, [dispatch]);
+  
+  const items = useSelector((state: storeType) => state.filter.items) ?? [];
 
-  return (
-    <div
-      className="flex items-center gap-3 bg-[#1a4d7a] overflow-x-auto pazza-folder-bar"
-    >
+  async function handleFolderClick(index: number, item: any) {
+    dispatch(setSelectedIndex(index));
+    try {
+      const posts = await getPostsForFilter(cid as string, item._id);
+      dispatch(setPosts(posts));
+    } catch (err) {
+      console.error("Failed to fetch posts for folder", err);
+    }
+  }
+
+   return (
+    <div className="pazza-folder-bar d-flex align-items-center gap-3 overflow-auto ">
       {items.map((item: any, index: number) => (
         <div
-          key={index}
-          onClick={() => dispatch(setSelectedIndex(index))}
-          className={`flex items-center gap-3 rounded ${
-            selectedIndex === index ? "border-2 border-white bg-white/30" : ""
-          }`}
+          key={item._id ?? index}
+          onClick={() => handleFolderClick(index, item)}
+          className={
+            "folder-chip d-flex align-items-center gap-2 rounded-pill border " +
+            (selectedIndex === index ? "folder-chip-active" : "")
+          }
         >
-          <span className="text-sm font-medium text-white pl-4">
-            {item.label}
+          <span className="folder-chip__label">
+            {item.name}
           </span>
           {item.count !== undefined && (
-            <span
-              className={`rounded-full text-xs p-1 text-center ${
-                selectedIndex === index
-                  ? "bg-[#1a4d7a] text-white"
-                  : "bg-white text-[#1a4d7a]"
-              }`}
-            >
+            <span className="folder-chip__count">
               {item.count}
             </span>
           )}
