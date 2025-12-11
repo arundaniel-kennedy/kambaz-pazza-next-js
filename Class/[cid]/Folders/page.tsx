@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import type { storeType } from "../../../store";
 import { setFolders, setSelectedIndex } from "./reducer";
 import { setPosts } from "../reducer";
-import {getPostsForFilter,getFolders} from "../client"
+import {getPostsForFilter,getFolders, getAllPostsForCourse} from "../client"
 import "./page.scss";
 import { useParams } from "next/navigation";
 
@@ -33,12 +33,15 @@ export default function FilterBar() {
   const items = useSelector((state: storeType) => state.filter.items) ?? [];
 
   async function handleFolderClick(index: number, item: any) {
-    dispatch(setSelectedIndex(index));
-    try {
+    if (selectedIndex === index) {
+      dispatch(setSelectedIndex(-1));
+  
+      const posts = await getAllPostsForCourse(cid as string);
+      dispatch(setPosts(posts));
+    } else {
+      dispatch(setSelectedIndex(index));
       const posts = await getPostsForFilter(cid as string, item._id);
       dispatch(setPosts(posts));
-    } catch (err) {
-      console.error("Failed to fetch posts for folder", err);
     }
   }
 
