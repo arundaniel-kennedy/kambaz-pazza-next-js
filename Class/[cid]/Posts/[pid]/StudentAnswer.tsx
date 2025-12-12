@@ -51,6 +51,10 @@ export default function StudentAnswer({ post }: { post: Posts }) {
         setEditOn(true);
         setAnswer(post?.student_answer?.details ?? "");
     };
+    const deleteAnswer = async () => {
+        await client.deleteAnswer(post?.student_answer?._id ?? "");
+        dispatch(setPost({ ...post, student_answer: null }));
+    };
     return (
         <div className="student-answer">
             <h5>
@@ -73,9 +77,9 @@ export default function StudentAnswer({ post }: { post: Posts }) {
                             </Button>
                             <Button
                                 className="bg-danger"
-                                onClick={() => editAnswer()}
+                                onClick={() => deleteAnswer()}
                             >
-                                Edit
+                                Delete
                             </Button>
                         </div>
                     ) : (

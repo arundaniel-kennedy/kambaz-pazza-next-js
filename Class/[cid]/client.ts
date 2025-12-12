@@ -40,7 +40,10 @@ export async function getEveryone() {
     return users;
 }
 
-
+export async function getFolders() {
+    const folders = await axios.get(`${PAZZA_API}/folders`);
+    return folders.data;
+}
 
 //-----------------------------
 // ******************************
@@ -104,11 +107,10 @@ export async function editAnswer(answerId: string, answer: Answer) {
     return newAnswer.data;
 }
 
-export async function getFolders() {
-    const folders = await axios.get(`${PAZZA_API}/folders`);
-    return folders.data;
+export async function deleteAnswer(answerId: string) {
+    const response = await axiosWithCredentials.delete(`${POSTS_API}/answer/${answerId}`)
+    return response.data
 }
-
 
 // ************** Follow up operations ****************
 export async function createFollowupToPost(
@@ -127,12 +129,12 @@ export async function createReplyToFollowup(
     followupId: string,
     reply: Replies
 ) {
-    
+
     const newReply = await axiosWithCredentials.post(
         `${POSTS_API}/${postId}/followup/${followupId}/reply`,
         reply
     );
-    
+
     return newReply.data;
 }
 
