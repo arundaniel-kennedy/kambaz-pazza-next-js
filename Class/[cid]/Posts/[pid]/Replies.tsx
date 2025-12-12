@@ -18,7 +18,7 @@ interface RepliesProps {
     pid: string;
     followupId: string;
     parentReplyId?: string;
-    immediateParentId?: string; // The direct parent of these replies
+    immediateParentId?: string;
     onUpdate: (updatedReplies: Reply[]) => void;
 }
 
@@ -38,7 +38,6 @@ export default function Replies({
     const [editReplyContent, setEditReplyContent] = useState("");
 
     const submitReplyToReply = async (replyId: string) => {
-        // Always use the direct parent reply ID for the API call
         const replyToReply = await client.createReplyToReply(
             pid,
             followupId,
@@ -47,7 +46,6 @@ export default function Replies({
         );
         setReplyContent("");
 
-        // Recursively update the reply in the tree
         const updateReplyInTree = (repliesList: Reply[]): Reply[] => {
             return repliesList.map((r) => {
                 if (r._id === replyId) {
@@ -110,8 +108,19 @@ export default function Replies({
     };
 
     const deleteReply = async (replyId: string) => {
-        // TODO: Add delete API call
-        // await client.deleteReply(pid, followupId, replyId);
+        
+        if (immediateParentId) {
+            
+            await client.deleteReplyToReply(
+                pid,
+                followupId,
+                immediateParentId,
+                replyId
+            );
+        } else {
+            
+            await client.deleteReplyToFollowup(pid, followupId, replyId);
+        }
 
         // Recursively remove the reply from the tree
         const removeReplyFromTree = (repliesList: Reply[]): Reply[] => {

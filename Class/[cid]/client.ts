@@ -163,13 +163,59 @@ export async function editFollowup(
     return response.data;
 }
 
-export async function editReplyToFollowup(postId: string,
-    followupId: string,replyId:string,reply:Replies) {
-        const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/followup/${followupId}/reply/${replyId}`,reply);
-        return response.data;
-    }
+export async function deleteFollowup(postId: string, followupId: string) {
+    const response = await axiosWithCredentials.delete(
+        `${POSTS_API}/${postId}/followup/${followupId}`
+    );
+    return response.data;
+}
 
-    export async function editReplyToReply(postId: string,
-    followupId: string,parentReplyId:string,replyId:string,reply:Replies) {
-        const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/followup/${followupId}/reply/${parentReplyId}/${replyId}`,reply);
-    }
+export async function editReplyToFollowup(
+    postId: string,
+    followupId: string,
+    replyId: string,
+    reply: Replies
+) {
+    const response = await axiosWithCredentials.put(
+        `${POSTS_API}/${postId}/followup/${followupId}/reply/${replyId}`,
+        reply
+    );
+    return response.data;
+}
+
+export async function editReplyToReply(
+    postId: string,
+    followupId: string,
+    parentReplyId: string,
+    replyId: string,
+    reply: Replies
+) {
+    const response = await axiosWithCredentials.put(
+        `${POSTS_API}/${postId}/followup/${followupId}/reply/${parentReplyId}/${replyId}`,
+        reply
+    );
+    return response.data;
+}
+
+export async function deleteReplyToFollowup(
+    postId: string,
+    followupId: string,
+    replyId: string
+) {
+    const response = await axiosWithCredentials.delete(
+        `${POSTS_API}/${postId}/followup/${followupId}/reply/${replyId}`
+    );
+    return response.data;
+}
+
+export async function deleteReplyToReply(
+    postId: string,
+    followupId: string,
+    parentReplyId: string,
+    replyId: string
+) {
+    const response = await axiosWithCredentials.delete(
+        `${POSTS_API}/${postId}/followup/${followupId}/reply/${parentReplyId}/${replyId}`
+    );
+    return response.data;
+}
