@@ -122,8 +122,7 @@ export default function Followup({ post }: { post: Posts }) {
     };
 
     const deleteFollowup = async (followupId: string) => {
-        // TODO: Add delete API call
-        // await client.deleteFollowup(pid as string, followupId);
+        await client.deleteFollowup(pid as string, followupId);
 
         const newFollowups = post.follow_ups?.filter(
             (f) => f._id !== followupId
