@@ -4,6 +4,8 @@ import { HiOutlineReply } from "react-icons/hi";
 import { FaUser } from "react-icons/fa6";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import * as client from "../../client";
+import { useSelector } from "react-redux";
+import { storeType } from "@/app/Pazza/store";
 
 interface Reply {
     _id?: string;
@@ -36,7 +38,11 @@ export default function Replies({
     >({});
     const [ReplyContent, setReplyContent] = useState("");
     const [editReplyContent, setEditReplyContent] = useState("");
-
+    const currentUser = useSelector(
+        (state: storeType) => state.accountReducer.currentUser
+    );
+    const { post } = useSelector((state: storeType) => state.classReducer);
+    const isInstr = currentUser?.role === "FACULTY";
     const submitReplyToReply = async (replyId: string) => {
         const replyToReply = await client.createReplyToReply(
             pid,
@@ -108,9 +114,7 @@ export default function Replies({
     };
 
     const deleteReply = async (replyId: string) => {
-        
         if (immediateParentId) {
-            
             await client.deleteReplyToReply(
                 pid,
                 followupId,
@@ -118,7 +122,6 @@ export default function Replies({
                 replyId
             );
         } else {
-            
             await client.deleteReplyToFollowup(pid, followupId, replyId);
         }
 
@@ -158,40 +161,43 @@ export default function Replies({
                                     Updated {reply.timestamp?.slice(0, 10)}
                                 </span>
                             </div>
-                            <Dropdown>
-                                <Dropdown.Toggle
-                                    variant="link"
-                                    className="p-0 text-dark"
-                                    id={`dropdown-${key}`}
-                                >
-                                    Actions
-                                    <BsThreeDotsVertical />
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item
-                                        onClick={() => {
-                                            setEditReplyContent(
-                                                reply.details
-                                                    ? reply.details
-                                                    : ""
-                                            );
-                                            setEditReplyMap((prev) => ({
-                                                ...prev,
-                                                [key]: !prev[key],
-                                            }));
-                                        }}
+                            {(isInstr ||
+                                currentUser?._id === post?.author?._id) && (
+                                <Dropdown>
+                                    <Dropdown.Toggle
+                                        variant="link"
+                                        className="p-0 text-dark"
+                                        id={`dropdown-${key}`}
                                     >
-                                        Edit
-                                    </Dropdown.Item>
-                                    <Dropdown.Item
-                                        onClick={() =>
-                                            deleteReply(reply._id || "")
-                                        }
-                                    >
-                                        Delete
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                                        Actions
+                                        <BsThreeDotsVertical />
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setEditReplyContent(
+                                                    reply.details
+                                                        ? reply.details
+                                                        : ""
+                                                );
+                                                setEditReplyMap((prev) => ({
+                                                    ...prev,
+                                                    [key]: !prev[key],
+                                                }));
+                                            }}
+                                        >
+                                            Edit
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() =>
+                                                deleteReply(reply._id || "")
+                                            }
+                                        >
+                                            Delete
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            )}
                         </div>
 
                         {!showEditReplyMap[key] && <>{reply.details}</>}
