@@ -23,7 +23,7 @@ export default function Navigation() {
     const getAllCourses = async () => {
         const courses = await KambazClient.fetchAllCourses();
         const current_course = courses.filter((c: any) => c._id === cid);
-        console.log(current_course)
+        console.log(current_course);
         setCourseName(`${current_course[0]?.name} - ${current_course[0]?._id}`);
     };
     useEffect(() => {
@@ -31,7 +31,7 @@ export default function Navigation() {
     }, []);
     return (
         <Navbar expand="lg" className="px-2 main-nav">
-            <Navbar.Brand href="#home">
+            <Navbar.Brand href={`/Pazza/Class/${cid}`}>
                 <PazzaLogo width={"90px"} className="mt-2" />
             </Navbar.Brand>
             <div>{course_name}</div>
