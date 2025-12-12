@@ -21,6 +21,8 @@ import StudentAnswer from "./StudentAnswer";
 import InstructorAnswer from "./InstructorAnswer";
 import Followup from "./Followup";
 import { MdOutlineEdit } from "react-icons/md";
+import Link from "next/link";
+import { IoArrowBackOutline } from "react-icons/io5";
 
 export default function Posts() {
     //All const declarations
@@ -74,11 +76,14 @@ export default function Posts() {
 
     return (
         <div className="post-screen-wrapper">
-            <div className="d-flex justify-content-between align-items-center question-views-wrapper">
+            <div className="d-flex align-items-center question-views-wrapper">
+                <Link href={`/Pazza/Class/${cid}`}>
+                    <IoArrowBackOutline className="text-primary fs-3  " />
+                </Link>
                 <div className="qv-container">
                     {post?.post_type} @ {pid}{" "}
                 </div>{" "}
-                <div className="d-flex">
+                <div className="d-flex ms-auto">
                     <div className="qv-container">Views : {views}</div>
                     {(isInstr || currentUser?._id === post?.author?._id) && (
                         <div>
