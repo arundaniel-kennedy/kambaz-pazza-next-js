@@ -183,7 +183,7 @@ export default function Followup({ post }: { post: Posts }) {
                                         updateFollowupResolved(followup)
                                     }
                                 ></FormCheck>
-                                <Dropdown>
+                               {(isInstr || currentUser?._id === post?.author?._id) && ( <Dropdown>
                                     <Dropdown.Toggle
                                         variant="link"
                                         className="p-0 text-dark"
@@ -218,7 +218,7 @@ export default function Followup({ post }: { post: Posts }) {
                                             Delete
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
-                                </Dropdown>
+                                </Dropdown>)}
                             </div>
 
                             <div className="d-flex">
