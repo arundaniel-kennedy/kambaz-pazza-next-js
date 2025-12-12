@@ -1,15 +1,19 @@
+
 "use client";
 
 import React, { useState } from "react";
-import { Button, Form, FormCheck, FormControl } from "react-bootstrap";
+import { Button, Form, FormCheck, FormControl, Dropdown } from "react-bootstrap";
 import { HiOutlineReply } from "react-icons/hi";
 import { FollowUp, Posts } from "../../DataStructure";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 import * as client from "../../client";
 import { useParams } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "../../reducer";
 import { FaRegComment, FaUser } from "react-icons/fa6";
+import { storeType } from "@/app/Pazza/store";
+import Replies from "./Replies";
 
 export default function Followup({ post }: { post: Posts }) {
     const { cid, pid } = useParams();
@@ -19,11 +23,15 @@ export default function Followup({ post }: { post: Posts }) {
         {}
     );
     const [replyBoxMap, setReplyBoxMap] = useState<Record<string, boolean>>({});
-    const [replyBoxMap2, setReplyBoxMap2] = useState<Record<string, boolean>>(
-        {}
-    );
     const [followupContent, setFollowupContent] = useState("");
+    const [editFollowupContent, setEditFollowupContent] = useState("");
     const [ReplyContent, setReplyContent] = useState("");
+    const [showEdit, setShowEdit] = useState<Record<string, boolean>>({});
+    const currentUser = useSelector(
+        (state: storeType) => state.accountReducer.currentUser
+    );
+    const isInstr = currentUser?.role === "FACULTY";
+
     const createFollowup = async () => {
         const newFollowup = await client.createFollowupToPost(pid as string, {
             details: followupContent,
@@ -62,20 +70,6 @@ export default function Followup({ post }: { post: Posts }) {
         );
     };
 
-    
-    const submitReplyToReply = async (followupId: string, replyId: string) => {
-        const replyToReply = await client.createReplyToReply(
-            pid as string,
-            followupId,
-            replyId,
-            { details: ReplyContent }
-        );
-        setReplyContent("");
-        
-        //TODO: logic to update react state for reply to replies.
-        
-    };
-
     const toggleResolved = () => {};
 
     const updateFollowupResolved = (followup: FollowUp) => {
@@ -98,6 +92,59 @@ export default function Followup({ post }: { post: Posts }) {
         );
     };
 
+    const editFollowup = async (followupId: string, followup: string) => {
+        const updatedFollowup = await client.editFollowup(
+            pid as string,
+            followupId,
+            { details: followup }
+        );
+        let newFollowups = post.follow_ups?.map((f: any) => {
+            if (f._id === updatedFollowup._id) {
+                return { ...f, ...updatedFollowup };
+            } else {
+                return f;
+            }
+        });
+        dispatch(
+            setPost({
+                ...post,
+                follow_ups: newFollowups,
+            })
+        );
+    };
+
+    const deleteFollowup = async (followupId: string) => {
+        // TODO: Add delete API call
+        // await client.deleteFollowup(pid as string, followupId);
+        
+        const newFollowups = post.follow_ups?.filter((f) => f._id !== followupId);
+        dispatch(
+            setPost({
+                ...post,
+                follow_ups: newFollowups,
+            })
+        );
+    };
+
+    const handleRepliesUpdate = (followupId: string, updatedReplies: any[]) => {
+        const newFollowups = post.follow_ups?.map((f: any) => {
+            if (f._id === followupId) {
+                return {
+                    ...f,
+                    replies: updatedReplies,
+                };
+            }
+            return f;
+        });
+
+        dispatch(
+            setPost({
+                ...post,
+                follow_ups: newFollowups,
+            })
+        );
+    };
+
     return (
         <div className="followup">
             {(post?.instructor_answer || post?.student_answer) && <Form />}
@@ -114,18 +161,55 @@ export default function Followup({ post }: { post: Posts }) {
                     return (
                         // These are followups
                         <div key={key} className="followup-item">
-                            <FormCheck
-                                defaultChecked={followup.is_resolved}
-                                type="switch"
-                                label={
-                                    followup.is_resolved
-                                        ? "Resolved"
-                                        : "Unresolved"
-                                }
-                                onChange={() =>
-                                    updateFollowupResolved(followup)
-                                }
-                            ></FormCheck>
+                            <div className="d-flex justify-content-between align-items-start">
+                                <FormCheck
+                                    defaultChecked={followup.is_resolved}
+                                    type="switch"
+                                    label={
+                                        followup.is_resolved
+                                            ? "Resolved"
+                                            : "Unresolved"
+                                    }
+                                    onChange={() =>
+                                        updateFollowupResolved(followup)
+                                    }
+                                ></FormCheck>
+                                <Dropdown>
+                                    <Dropdown.Toggle
+                                        variant="link"
+                                        className="p-0 text-dark"
+                                        id={`dropdown-followup-${key}`}
+                                    >
+                                        Actions
+                                        <BsThreeDotsVertical />
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setEditFollowupContent(
+                                                    followup.details
+                                                        ? followup.details
+                                                        : ""
+                                                );
+                                                setShowEdit((prev) => ({
+                                                    ...prev,
+                                                    [key]: !prev[key],
+                                                }));
+                                            }}
+                                        >
+                                            Edit
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() =>
+                                                deleteFollowup(followup._id || "")
+                                            }
+                                        >
+                                            Delete
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
+
                             <div className="d-flex">
                                 <h4>
                                     <FaUser />
@@ -138,8 +222,43 @@ export default function Followup({ post }: { post: Posts }) {
                                     </span>
                                 </h6>{" "}
                             </div>
+
+                            {showEdit[key] && (
+                                <div className="followup-textbox mb-3">
+                                    <Form>
+                                        <FormControl
+                                            type="text"
+                                            value={editFollowupContent}
+                                            onChange={(e) => {
+                                                setEditFollowupContent(
+                                                    e.target.value
+                                                );
+                                            }}
+                                            onKeyDown={async (e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    await editFollowup(
+                                                        followup._id
+                                                            ? followup._id
+                                                            : "",
+                                                        editFollowupContent
+                                                    );
+                                                    setShowEdit((prev) => ({
+                                                        ...prev,
+                                                        [key]: !prev[key],
+                                                    }));
+                                                }
+                                            }}
+                                        />
+                                    </Form>
+                                </div>
+                            )}
                             <h5>
-                                {followup.details} <br />{" "}
+                                {!showEdit[key] && (
+                                    <>
+                                        {followup.details} <br />{" "}
+                                    </>
+                                )}
                                 <Button
                                     className="reply-button"
                                     onClick={() =>
@@ -152,6 +271,7 @@ export default function Followup({ post }: { post: Posts }) {
                                     <HiOutlineReply />
                                     Reply
                                 </Button>
+
                                 {showReplyBox && (
                                     <div className="mt-2">
                                         <textarea
@@ -194,86 +314,20 @@ export default function Followup({ post }: { post: Posts }) {
                             </h5>
 
                             {/* These are replies to followups */}
-                            {followup?.replies?.map((reply) => {
-                                const key = String(reply._id);
-                                const showReplyBox = replyBoxMap2[key] ?? false;
-                                return (
-                                    <div key={reply._id} className="reply-item">
-                                        <div className="d-flex">
-                                            <h6 className="me-2">
-                                                <FaUser />
-                                                {reply.author}
-                                            </h6>{" "}
-                                            <span className="timestamp">
-                                                Updated{" "}
-                                                {reply.timestamp?.slice(0, 10)}
-                                            </span>
-                                        </div>
-                                        {reply.details}
-                                        <br />{" "}
-                                        <Button
-                                            onClick={() =>
-                                                setReplyBoxMap2((prev) => ({
-                                                    ...prev,
-                                                    [key]: !showReplyBox, // toggle only this reply box
-                                                }))
-                                            }
-                                            className="reply-button"
-                                        >
-                                            <HiOutlineReply />
-                                            Reply
-                                        </Button>
-                                        {showReplyBox && (
-                                            <div className="mt-2">
-                                                <textarea
-                                                    className="form-control"
-                                                    placeholder="Write your reply..."
-                                                    rows={3}
-                                                    onChange={(e) => {
-                                                        setReplyContent(
-                                                            e.target.value
-                                                        );
-                                                    }}
-                                                />
-                                                <Button
-                                                    className="mt-2"
-                                                    onClick={() => {
-                                                        submitReplyToReply(
-                                                            followup._id
-                                                                ? followup._id
-                                                                : "",
-                                                            reply._id
-                                                                ? reply._id
-                                                                : ""
-                                                        );
-                                                        setReplyBoxMap2(
-                                                            (prev) => ({
-                                                                ...prev,
-                                                                [key]: !showReplyBox,
-                                                            })
-                                                        );
-                                                    }}
-                                                >
-                                                    Submit Reply
-                                                </Button>
-                                                <Button
-                                                    onClick={() => {
-                                                        setReplyBoxMap2(
-                                                            (prev) => ({
-                                                                ...prev,
-                                                                [key]: !showReplyBox,
-                                                            })
-                                                        );
-                                                    }}
-                                                    className="mt-2 ms-2"
-                                                >
-                                                    Cancel
-                                                </Button>
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
+                            {followup?.replies && followup.replies.length > 0 && (
+                                <Replies
+                                    replies={followup.replies}
+                                    pid={pid as string}
+                                    followupId={followup._id || ""}
+                                    immediateParentId={undefined}
+                                    onUpdate={(updatedReplies) =>
+                                        handleRepliesUpdate(
+                                            followup._id || "",
+                                            updatedReplies
+                                        )
+                                    }
+                                />
+                            )}
                         </div>
                     );
                 })}
@@ -284,7 +338,7 @@ export default function Followup({ post }: { post: Posts }) {
                     <FormControl
                         type="text"
                         placeholder="Compose a Followup Discussion here!"
-                        value={followupContent}     
+                        value={followupContent}
                         onChange={(e) => {
                             setFollowupContent(e.target.value);
                         }}
