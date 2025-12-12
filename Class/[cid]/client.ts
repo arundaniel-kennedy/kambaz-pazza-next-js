@@ -176,5 +176,5 @@ export async function editReplyToFollowup(postId: string,
 
     export async function editReplyToReply(postId: string,
     followupId: string,parentReplyId:string,replyId:string,reply:Replies) {
-        //TODO : call api backend
+        const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/followup/${followupId}/reply/${parentReplyId}/${replyId}`,reply);
     }

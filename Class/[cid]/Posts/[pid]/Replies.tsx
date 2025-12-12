@@ -31,7 +31,9 @@ export default function Replies({
     onUpdate,
 }: RepliesProps) {
     const [replyBoxMap, setReplyBoxMap] = useState<Record<string, boolean>>({});
-    const [showEditReplyMap, setEditReplyMap] = useState<Record<string, boolean>>({});
+    const [showEditReplyMap, setEditReplyMap] = useState<
+        Record<string, boolean>
+    >({});
     const [ReplyContent, setReplyContent] = useState("");
     const [editReplyContent, setEditReplyContent] = useState("");
 
@@ -72,9 +74,15 @@ export default function Replies({
         if (immediateParentId) {
             // This is a nested reply (reply to reply)
             // API expects: /reply/:parentReplyId/:replyId
-            await client.editReplyToReply(pid, followupId, immediateParentId, replyId, {
-                details: reply,
-            });
+            await client.editReplyToReply(
+                pid,
+                followupId,
+                immediateParentId,
+                replyId,
+                {
+                    details: reply,
+                }
+            );
         } else {
             // Direct reply to followup
             await client.editReplyToFollowup(pid, followupId, replyId, {
@@ -104,7 +112,7 @@ export default function Replies({
     const deleteReply = async (replyId: string) => {
         // TODO: Add delete API call
         // await client.deleteReply(pid, followupId, replyId);
-        
+
         // Recursively remove the reply from the tree
         const removeReplyFromTree = (repliesList: Reply[]): Reply[] => {
             return repliesList
@@ -154,7 +162,9 @@ export default function Replies({
                                     <Dropdown.Item
                                         onClick={() => {
                                             setEditReplyContent(
-                                                reply.details ? reply.details : ""
+                                                reply.details
+                                                    ? reply.details
+                                                    : ""
                                             );
                                             setEditReplyMap((prev) => ({
                                                 ...prev,
@@ -165,7 +175,9 @@ export default function Replies({
                                         Edit
                                     </Dropdown.Item>
                                     <Dropdown.Item
-                                        onClick={() => deleteReply(reply._id || "")}
+                                        onClick={() =>
+                                            deleteReply(reply._id || "")
+                                        }
                                     >
                                         Delete
                                     </Dropdown.Item>
@@ -228,7 +240,9 @@ export default function Replies({
                                 <Button
                                     className="mt-2"
                                     onClick={() => {
-                                        submitReplyToReply(reply._id ? reply._id : "");
+                                        submitReplyToReply(
+                                            reply._id ? reply._id : ""
+                                        );
                                         setReplyBoxMap((prev) => ({
                                             ...prev,
                                             [key]: !showReplyBox,
@@ -263,7 +277,11 @@ export default function Replies({
                                     onUpdate={(updatedNestedReplies) => {
                                         const newReplies = replies.map((r) =>
                                             r._id === reply._id
-                                                ? { ...r, replies: updatedNestedReplies }
+                                                ? {
+                                                      ...r,
+                                                      replies:
+                                                          updatedNestedReplies,
+                                                  }
                                                 : r
                                         );
                                         onUpdate(newReplies);
