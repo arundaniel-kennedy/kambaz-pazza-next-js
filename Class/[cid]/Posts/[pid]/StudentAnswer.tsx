@@ -52,7 +52,10 @@ export default function StudentAnswer({ post }: { post: Posts }) {
         setAnswer(post?.student_answer?.details ?? "");
     };
     const deleteAnswer = async () => {
-        await client.deleteAnswer(post?.student_answer?._id ?? "");
+        await client.deleteStudentAnswer(
+            pid as string,
+            post?.student_answer?._id ?? ""
+        );
         dispatch(setPost({ ...post, student_answer: null }));
     };
     return (
@@ -100,7 +103,8 @@ export default function StudentAnswer({ post }: { post: Posts }) {
                 </div>
             )}
             {(!post?.student_answer || editOn) &&
-                currentUser?.role === "STUDENT" && (
+                (currentUser?.role === "STUDENT" ||
+                    ["FACULTY", "TA"].includes(currentUser?.role ?? "")) && (
                     <div>
                         <CustomEditor
                             content="custom"

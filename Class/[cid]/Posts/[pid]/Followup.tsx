@@ -1,8 +1,13 @@
-
 "use client";
 
 import React, { useState } from "react";
-import { Button, Form, FormCheck, FormControl, Dropdown } from "react-bootstrap";
+import {
+    Button,
+    Form,
+    FormCheck,
+    FormControl,
+    Dropdown,
+} from "react-bootstrap";
 import { HiOutlineReply } from "react-icons/hi";
 import { FollowUp, Posts } from "../../DataStructure";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -72,8 +77,11 @@ export default function Followup({ post }: { post: Posts }) {
 
     const toggleResolved = () => {};
 
-    const updateFollowupResolved = (followup: FollowUp) => {
-        // TODO: add code to update backend
+    const updateFollowupResolved = async (followup: FollowUp) => {
+        await client.editFollowup(pid as string, followup._id ?? "", {
+            ...followup,
+            is_resolved: !followup.is_resolved,
+        });
 
         let followups = JSON.parse(JSON.stringify(post.follow_ups));
         let updatedFollowups = followups.map((f: any) => {
@@ -116,8 +124,10 @@ export default function Followup({ post }: { post: Posts }) {
     const deleteFollowup = async (followupId: string) => {
         // TODO: Add delete API call
         // await client.deleteFollowup(pid as string, followupId);
-        
-        const newFollowups = post.follow_ups?.filter((f) => f._id !== followupId);
+
+        const newFollowups = post.follow_ups?.filter(
+            (f) => f._id !== followupId
+        );
         dispatch(
             setPost({
                 ...post,
@@ -201,7 +211,9 @@ export default function Followup({ post }: { post: Posts }) {
                                         </Dropdown.Item>
                                         <Dropdown.Item
                                             onClick={() =>
-                                                deleteFollowup(followup._id || "")
+                                                deleteFollowup(
+                                                    followup._id || ""
+                                                )
                                             }
                                         >
                                             Delete
@@ -314,20 +326,21 @@ export default function Followup({ post }: { post: Posts }) {
                             </h5>
 
                             {/* These are replies to followups */}
-                            {followup?.replies && followup.replies.length > 0 && (
-                                <Replies
-                                    replies={followup.replies}
-                                    pid={pid as string}
-                                    followupId={followup._id || ""}
-                                    immediateParentId={undefined}
-                                    onUpdate={(updatedReplies) =>
-                                        handleRepliesUpdate(
-                                            followup._id || "",
-                                            updatedReplies
-                                        )
-                                    }
-                                />
-                            )}
+                            {followup?.replies &&
+                                followup.replies.length > 0 && (
+                                    <Replies
+                                        replies={followup.replies}
+                                        pid={pid as string}
+                                        followupId={followup._id || ""}
+                                        immediateParentId={undefined}
+                                        onUpdate={(updatedReplies) =>
+                                            handleRepliesUpdate(
+                                                followup._id || "",
+                                                updatedReplies
+                                            )
+                                        }
+                                    />
+                                )}
                         </div>
                     );
                 })}

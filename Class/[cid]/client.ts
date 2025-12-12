@@ -116,8 +116,13 @@ export async function editAnswer(answerId: string, answer: Answer) {
     return newAnswer.data;
 }
 
-export async function deleteAnswer(answerId: string) {
-    const response = await axiosWithCredentials.delete(`${POSTS_API}/answer/${answerId}`)
+export async function deleteStudentAnswer(postId: string, answerId: string) {
+    const response = await axiosWithCredentials.delete(`${POSTS_API}/${postId}/student_answer/${answerId}`)
+    return response.data
+}
+
+export async function deleteInstructorAnswer(postId: string, answerId: string) {
+    const response = await axiosWithCredentials.delete(`${POSTS_API}/${postId}/instructor_answer/${answerId}`)
     return response.data
 }
 
@@ -169,12 +174,12 @@ export async function editFollowup(
 }
 
 export async function editReplyToFollowup(postId: string,
-    followupId: string,replyId:string,reply:Replies) {
-        const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/followup/${followupId}/reply/${replyId}`,reply);
-        return response.data;
-    }
+    followupId: string, replyId: string, reply: Replies) {
+    const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/followup/${followupId}/reply/${replyId}`, reply);
+    return response.data;
+}
 
-    export async function editReplyToReply(postId: string,
-    followupId: string,parentReplyId:string,replyId:string,reply:Replies) {
-        const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/followup/${followupId}/reply/${parentReplyId}/${replyId}`,reply);
-    }
+export async function editReplyToReply(postId: string,
+    followupId: string, parentReplyId: string, replyId: string, reply: Replies) {
+    const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/followup/${followupId}/reply/${parentReplyId}/${replyId}`, reply);
+}
