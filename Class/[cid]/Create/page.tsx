@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter, useParams } from "next/navigation";
 import Editor from "react-simple-wysiwyg";
 import {
-    Container,
     Form,
     Button,
     Badge,
@@ -15,7 +14,6 @@ import {
 } from "react-bootstrap";
 import { FaPlusCircle, FaTimes } from "react-icons/fa";
 import { IoArrowBackOutline } from "react-icons/io5";
-import filterData from "../../../../(Kambaz)/Database/filterData.json";
 import type { storeType } from "../../../store";
 import {
     setPostType,
@@ -43,7 +41,7 @@ export default function NewPostScreen() {
     const [instructors, setInstructors] = useState<
         Array<{ _id: string; firstName: string; lastName: string }>
     >([]);
-    const [postAudience, setPostAudience] = useState<string[]>([]);
+    
     const dispatch = useDispatch();
     const { cid } = useParams();
     const router = useRouter();
@@ -80,9 +78,6 @@ export default function NewPostScreen() {
         }
     };
 
-    const handleUserToggle = (userId: string) => {
-        dispatch(toggleSelectedUser(userId));
-    };
 
     const handleSummaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -119,6 +114,13 @@ export default function NewPostScreen() {
             return;
         }
 
+        const audience =
+    formData.postTo === "entire-class"
+        ? ["ALL"]
+        : formData.selectedUsers.length === 0
+            ? ["ALL"]
+            : [...formData.selectedUsers];
+
         const postData = {
             post_type: formData.postType.toUpperCase() as
                 | "QUESTION"
@@ -136,6 +138,8 @@ export default function NewPostScreen() {
             course: Array.isArray(cid) ? cid[0] : cid,
             timestamp: new Date().toISOString(),
             read_by: [],
+            audience
+            
         };
 
         try {
@@ -159,15 +163,7 @@ export default function NewPostScreen() {
         return "Post";
     };
 
-    const handleAddAudience = (instructorId: string) => {
-        if (!postAudience.includes(instructorId)) {
-            setPostAudience([...postAudience, instructorId]);
-        }
-    };
 
-    const handleRemoveAudience = (instructorId: string) => {
-        setPostAudience(postAudience.filter((id) => id !== instructorId));
-    };
 
     return (
         <div>
@@ -295,13 +291,11 @@ export default function NewPostScreen() {
                                 <div>
                                     <Form.Select
                                         onChange={(e) => {
-                                            if (e.target.value) {
-                                                handleAddAudience(
-                                                    e.target.value
-                                                );
-                                                e.target.value = "";
-                                            }
-                                        }}
+    if (e.target.value) {
+        dispatch(toggleSelectedUser(e.target.value));
+        e.target.value = "";
+    }
+}}
                                     >
                                         <option value="">
                                             Select an instructor...
@@ -317,7 +311,7 @@ export default function NewPostScreen() {
                                         ))}
                                     </Form.Select>
                                     <div className="mt-2 d-flex flex-wrap gap-2">
-                                        {postAudience.map((audienceId) => {
+                                        {formData.selectedUsers.map((audienceId) => {
                                             const instructor = instructors.find(
                                                 (i) => i._id === audienceId
                                             );
@@ -330,11 +324,7 @@ export default function NewPostScreen() {
                                                     {instructor?.firstName}{" "}
                                                     {instructor?.lastName}
                                                     <FaTimes
-                                                        onClick={() =>
-                                                            handleRemoveAudience(
-                                                                audienceId
-                                                            )
-                                                        }
+                                                        onClick={() => dispatch(toggleSelectedUser(audienceId))}
                                                     ></FaTimes>
                                                 </Badge>
                                             );
