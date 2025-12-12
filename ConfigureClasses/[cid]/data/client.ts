@@ -46,7 +46,7 @@ export const updateFolder = async (cid: string, fid: string, folderName: string)
 
 export const deleteFoldersFromCourse = async (cid: string, folderNames: string[]) => {
     try {
-        const response = await axiosWithCredentials.put(`${PAZZA_SERVER}/${cid}/folders/delete`, folderNames);
+        const response = await axiosWithCredentials.delete(`${PAZZA_SERVER}/${cid}/folders/delete`, { data: folderNames });
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
