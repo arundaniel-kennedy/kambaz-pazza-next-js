@@ -6,10 +6,11 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import * as client from "../../client";
 import { useSelector } from "react-redux";
 import { storeType } from "@/app/Pazza/store";
+import { User } from "@/app/(Kambaz)/Account/reducer";
 
 interface Reply {
     _id?: string;
-    author?: string;
+    author?: User;
     details?: string;
     timestamp?: string;
     replies?: Reply[];
@@ -155,7 +156,7 @@ export default function Replies({
                             <div className="d-flex">
                                 <h6 className="me-2">
                                     <FaUser />
-                                    {reply.author}
+                                    {reply?.author?.firstName} {reply?.author?.lastName}
                                 </h6>{" "}
                                 <span className="timestamp">
                                     Updated {reply.timestamp?.slice(0, 10)}

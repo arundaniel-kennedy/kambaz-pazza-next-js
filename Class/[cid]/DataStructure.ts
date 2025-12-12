@@ -19,7 +19,7 @@ export type Posts = {
 };
 export type FollowUp = {
   _id?: string;
-  author?: string;
+  author?: User;
   details?: string;
   is_resolved?: boolean;
   timestamp?: string;
@@ -27,7 +27,7 @@ export type FollowUp = {
 };
 export type Replies = {
   _id?: string;
-  author?: string;
+  author?: User;
   details?: string;
   timestamp?: string;
   replies?: Replies[];

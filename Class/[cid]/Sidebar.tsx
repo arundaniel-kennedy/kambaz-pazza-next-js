@@ -200,12 +200,10 @@ export default function Sidebar() {
                                         <PiStudentBold className="me-1" />
                                       </span>
                                     )}
-                                    {post.summary}
+                                    <span dangerouslySetInnerHTML={{__html: post.summary ?? ""}}></span>
                                   </div>
                                   
-                                  <div className="posts-description">
-                                    {post.details}
-                                  </div>
+                                  <div className="posts-description" dangerouslySetInnerHTML={{__html: post.details ?? ""}}></div>
                                 </ListGroupItem>
                               </Link>
                             </div>

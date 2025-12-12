@@ -183,48 +183,52 @@ export default function Followup({ post }: { post: Posts }) {
                                         updateFollowupResolved(followup)
                                     }
                                 ></FormCheck>
-                               {(isInstr || currentUser?._id === post?.author?._id) && ( <Dropdown>
-                                    <Dropdown.Toggle
-                                        variant="link"
-                                        className="p-0 text-dark"
-                                        id={`dropdown-followup-${key}`}
-                                    >
-                                        Actions
-                                        <BsThreeDotsVertical />
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item
-                                            onClick={() => {
-                                                setEditFollowupContent(
-                                                    followup.details
-                                                        ? followup.details
-                                                        : ""
-                                                );
-                                                setShowEdit((prev) => ({
-                                                    ...prev,
-                                                    [key]: !prev[key],
-                                                }));
-                                            }}
+                                {(isInstr ||
+                                    currentUser?._id === post?.author?._id) && (
+                                    <Dropdown>
+                                        <Dropdown.Toggle
+                                            variant="link"
+                                            className="p-0 text-dark"
+                                            id={`dropdown-followup-${key}`}
                                         >
-                                            Edit
-                                        </Dropdown.Item>
-                                        <Dropdown.Item
-                                            onClick={() =>
-                                                deleteFollowup(
-                                                    followup._id || ""
-                                                )
-                                            }
-                                        >
-                                            Delete
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>)}
+                                            Actions
+                                            <BsThreeDotsVertical />
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item
+                                                onClick={() => {
+                                                    setEditFollowupContent(
+                                                        followup.details
+                                                            ? followup.details
+                                                            : ""
+                                                    );
+                                                    setShowEdit((prev) => ({
+                                                        ...prev,
+                                                        [key]: !prev[key],
+                                                    }));
+                                                }}
+                                            >
+                                                Edit
+                                            </Dropdown.Item>
+                                            <Dropdown.Item
+                                                onClick={() =>
+                                                    deleteFollowup(
+                                                        followup._id || ""
+                                                    )
+                                                }
+                                            >
+                                                Delete
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                )}
                             </div>
 
-                            <div className="d-flex">
+                            <div className="d-flex align-items-center mt-1">
                                 <h4>
-                                    <FaUser />
-                                    {followup.author}
+                                    <FaUser style={{ marginTop: "-8px" }} className="me-2"/>
+                                    {followup?.author?.firstName}{" "}
+                                    {followup?.author?.lastName}
                                 </h4>
                                 <h6 className="ms-2">
                                     <span className="timestamp">

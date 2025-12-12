@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, redirect } from "next/navigation";
 import Editor from "react-simple-wysiwyg";
 import { Form, Button, Badge, Alert, Row, Col } from "react-bootstrap";
 import { FaPlusCircle, FaTimes } from "react-icons/fa";
@@ -146,6 +146,7 @@ export default function NewPostScreen() {
 
     const handleCancel = () => {
         dispatch(resetForm());
+        redirect(`/Pazza/Class/${cid}`);
     };
 
     const getPostButtonText = () => {
