@@ -12,26 +12,29 @@ const USERS_API = `${HTTP_SERVER}/api/users`;
 // ******************************
 //(Ashwin)
 export async function createPost(post: Partial<Posts>) {
-    const newPost = await axiosWithCredentials.post(
-        `${POSTS_API}`,
-        post
-    );
+    const newPost = await axiosWithCredentials.post(`${POSTS_API}`, post);
     return newPost.data;
 }
 
 export async function getPostsForFilter(courseId: string, folderId: string) {
-    const posts = await axiosWithCredentials.get(`${PAZZA_API}/${courseId}/folders/${folderId}`);
+    const posts = await axiosWithCredentials.get(
+        `${PAZZA_API}/${courseId}/folders/${folderId}`
+    );
     return posts.data;
 }
 
 export async function getAllInstructors() {
     const role = "FACULTY";
-    const { data: instructors } = await axiosWithCredentials.get(`${USERS_API}?role=${role}`);
+    const { data: instructors } = await axiosWithCredentials.get(
+        `${USERS_API}?role=${role}`
+    );
     return instructors;
 }
 
 export async function getInstructorsForCourse(courseId: string) {
-    const { data: instructors } = await axiosWithCredentials.get(`${USERS_API}/instructors/${courseId}`);
+    const { data: instructors } = await axiosWithCredentials.get(
+        `${USERS_API}/instructors/${courseId}`
+    );
     return instructors;
 }
 
@@ -51,7 +54,9 @@ export async function getFolders() {
 
 // ************** Direct post operations ****************
 export async function getAllPostsForCourse(courseId: string) {
-    const posts = await axiosWithCredentials.get(`${PAZZA_API}/${courseId}/posts`);
+    const posts = await axiosWithCredentials.get(
+        `${PAZZA_API}/${courseId}/posts`
+    );
     return posts.data;
 }
 
@@ -77,13 +82,14 @@ export async function editPost(postId: string | undefined, postUpdates: Posts) {
 }
 
 export async function deletePost(postId: string | undefined) {
-    await axiosWithCredentials.delete(
-        `${POSTS_API}/${postId}`
-    );
+    await axiosWithCredentials.delete(`${POSTS_API}/${postId}`);
 }
 
 // ************** Post answer operations ****************
-export async function createStudentAnswerToPost(postId: string, answer: Answer) {
+export async function createStudentAnswerToPost(
+    postId: string,
+    answer: Answer
+) {
     const newAnswer = await axiosWithCredentials.post(
         `${POSTS_API}/${postId}/student_answer`,
         answer
@@ -91,7 +97,10 @@ export async function createStudentAnswerToPost(postId: string, answer: Answer) 
     return newAnswer.data;
 }
 
-export async function createInstructorAnswerToPost(postId: string, answer: Answer) {
+export async function createInstructorAnswerToPost(
+    postId: string,
+    answer: Answer
+) {
     const newAnswer = await axiosWithCredentials.post(
         `${POSTS_API}/${postId}/instructor_answer`,
         answer
@@ -113,10 +122,7 @@ export async function deleteAnswer(answerId: string) {
 }
 
 // ************** Follow up operations ****************
-export async function createFollowupToPost(
-    postId: string,
-    followup: FollowUp
-) {
+export async function createFollowupToPost(postId: string, followup: FollowUp) {
     const newFollowup = await axiosWithCredentials.post(
         `${POSTS_API}/${postId}/followup`,
         followup
@@ -129,7 +135,6 @@ export async function createReplyToFollowup(
     followupId: string,
     reply: Replies
 ) {
-
     const newReply = await axiosWithCredentials.post(
         `${POSTS_API}/${postId}/followup/${followupId}/reply`,
         reply
@@ -150,3 +155,26 @@ export async function createReplyToReply(
     );
     return newReply.data;
 }
+
+export async function editFollowup(
+    postId: string,
+    followupId: string,
+    followup: FollowUp
+) {
+    const response = await axiosWithCredentials.put(
+        `${POSTS_API}/${postId}/followup/${followupId}`,
+        followup
+    );
+    return response.data;
+}
+
+export async function editReplyToFollowup(postId: string,
+    followupId: string,replyId:string,reply:Replies) {
+        const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/followup/${followupId}/reply/${replyId}`,reply);
+        return response.data;
+    }
+
+    export async function editReplyToReply(postId: string,
+    followupId: string,parentReplyId:string,replyId:string,reply:Replies) {
+        //TODO : call api backend
+    }

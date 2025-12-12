@@ -20,6 +20,7 @@ import { RootState } from "../../../../../(Kambaz)/store";
 import StudentAnswer from "./StudentAnswer";
 import InstructorAnswer from "./InstructorAnswer";
 import Followup from "./Followup";
+import { MdOutlineEdit } from "react-icons/md";
 
 export default function Posts() {
     //All const declarations
@@ -87,9 +88,12 @@ export default function Posts() {
                                 </DropdownToggle>
                                 <DropdownMenu>
                                     <DropdownItem
-                                    onClick={()=>{
-                                        setShowEdit(!showEdit)
-                                    }}>Edit</DropdownItem>
+                                        onClick={() => {
+                                            setShowEdit(!showEdit);
+                                        }}
+                                    >
+                                        Edit
+                                    </DropdownItem>
                                     <DropdownItem
                                         onClick={() =>
                                             setShowDeleteConfirm(true)
@@ -225,9 +229,7 @@ export default function Posts() {
                         __html: post?.summary || "",
                     }}
                     className="posts-title"
-                >
-                   
-                </div>
+                ></div>
             )}
             {showEdit && (
                 <div className="editor-wrapper mb-5">
@@ -241,9 +243,7 @@ export default function Posts() {
                         __html: post?.details || "",
                     }}
                     className="posts-description"
-                >
-                    
-                </div>
+                ></div>
             )}
 
             {showEdit && (
@@ -261,6 +261,7 @@ export default function Posts() {
                             className="edit-button "
                             onClick={() => editPost()}
                         >
+                            <MdOutlineEdit />
                             Edit
                         </Button>
                     )}
