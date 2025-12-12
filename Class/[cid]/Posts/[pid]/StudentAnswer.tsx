@@ -59,13 +59,28 @@ export default function StudentAnswer({ post }: { post: Posts }) {
             </h5>
             {post?.student_answer && !editOn && (
                 <div key={post?.student_answer._id} className="ms-5">
-                    <Button
-                        className="bg-success float-end"
-                        onClick={() => editAnswer()}
-                        style={{ marginTop: "-43px" }}
-                    >
-                        Edit
-                    </Button>
+                    {post?.student_answer?.author?._id === currentUser?._id ||
+                    ["FACULTY", "TA"].includes(currentUser?.role ?? "") ? (
+                        <div
+                            className="d-flex gap-2 float-end"
+                            style={{ marginTop: "-43px" }}
+                        >
+                            <Button
+                                className="bg-success"
+                                onClick={() => editAnswer()}
+                            >
+                                Edit
+                            </Button>
+                            <Button
+                                className="bg-danger"
+                                onClick={() => editAnswer()}
+                            >
+                                Edit
+                            </Button>
+                        </div>
+                    ) : (
+                        ""
+                    )}
                     <div className="d-flex">
                         <h6 className="me-2">
                             <FaUser />
