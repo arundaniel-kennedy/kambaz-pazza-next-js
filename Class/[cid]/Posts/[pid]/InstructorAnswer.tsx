@@ -55,6 +55,13 @@ export default function InstructorAnswer({ post }: { post: Posts }) {
         setEditOn(true);
         setAnswer(post?.instructor_answer?.details ?? "");
     };
+    const deleteAnswer = async () => {
+        await client.deleteInstructorAnswer(
+            pid as string,
+            post?.instructor_answer?._id ?? ""
+        );
+        dispatch(setPost({ ...post, instructor_answer: null }));
+    };
     return (
         <div className="instr-answer">
             <h5>
@@ -63,13 +70,27 @@ export default function InstructorAnswer({ post }: { post: Posts }) {
             </h5>
             {post?.instructor_answer && !editOn && (
                 <div key={post?.instructor_answer._id} className="ms-5">
-                    <Button
-                        className="bg-success float-end"
-                        onClick={() => editAnswer()}
-                        style={{ marginTop: "-43px" }}
-                    >
-                        Edit
-                    </Button>
+                    {["FACULTY", "TA"].includes(currentUser?.role ?? "") ? (
+                        <div
+                            className="d-flex gap-2 float-end"
+                            style={{ marginTop: "-43px" }}
+                        >
+                            <Button
+                                className="bg-success"
+                                onClick={() => editAnswer()}
+                            >
+                                Edit
+                            </Button>
+                            <Button
+                                className="bg-danger"
+                                onClick={() => deleteAnswer()}
+                            >
+                                Delete
+                            </Button>
+                        </div>
+                    ) : (
+                        ""
+                    )}
                     <div className="d-flex">
                         <h6 className="me-2">
                             <FaUser />

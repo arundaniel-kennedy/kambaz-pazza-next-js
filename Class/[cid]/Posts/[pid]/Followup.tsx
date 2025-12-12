@@ -77,8 +77,11 @@ export default function Followup({ post }: { post: Posts }) {
 
     const toggleResolved = () => {};
 
-    const updateFollowupResolved = (followup: FollowUp) => {
-        // TODO: add code to update backend
+    const updateFollowupResolved = async (followup: FollowUp) => {
+        await client.editFollowup(pid as string, followup._id ?? "", {
+            ...followup,
+            is_resolved: !followup.is_resolved,
+        });
 
         let followups = JSON.parse(JSON.stringify(post.follow_ups));
         let updatedFollowups = followups.map((f: any) => {

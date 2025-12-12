@@ -43,6 +43,11 @@ export async function getEveryone() {
     return users;
 }
 
+export async function getFolders() {
+    const folders = await axios.get(`${PAZZA_API}/folders`);
+    return folders.data;
+}
+
 //-----------------------------
 // ******************************
 //(Arth)
@@ -111,9 +116,14 @@ export async function editAnswer(answerId: string, answer: Answer) {
     return newAnswer.data;
 }
 
-export async function getFolders() {
-    const folders = await axios.get(`${PAZZA_API}/folders`);
-    return folders.data;
+export async function deleteStudentAnswer(postId: string, answerId: string) {
+    const response = await axiosWithCredentials.delete(`${POSTS_API}/${postId}/student_answer/${answerId}`)
+    return response.data
+}
+
+export async function deleteInstructorAnswer(postId: string, answerId: string) {
+    const response = await axiosWithCredentials.delete(`${POSTS_API}/${postId}/instructor_answer/${answerId}`)
+    return response.data
 }
 
 // ************** Follow up operations ****************

@@ -51,6 +51,13 @@ export default function StudentAnswer({ post }: { post: Posts }) {
         setEditOn(true);
         setAnswer(post?.student_answer?.details ?? "");
     };
+    const deleteAnswer = async () => {
+        await client.deleteStudentAnswer(
+            pid as string,
+            post?.student_answer?._id ?? ""
+        );
+        dispatch(setPost({ ...post, student_answer: null }));
+    };
     return (
         <div className="student-answer">
             <h5>
@@ -73,9 +80,9 @@ export default function StudentAnswer({ post }: { post: Posts }) {
                             </Button>
                             <Button
                                 className="bg-danger"
-                                onClick={() => editAnswer()}
+                                onClick={() => deleteAnswer()}
                             >
-                                Edit
+                                Delete
                             </Button>
                         </div>
                     ) : (
@@ -96,7 +103,8 @@ export default function StudentAnswer({ post }: { post: Posts }) {
                 </div>
             )}
             {(!post?.student_answer || editOn) &&
-                currentUser?.role === "STUDENT" && (
+                (currentUser?.role === "STUDENT" ||
+                    ["FACULTY", "TA"].includes(currentUser?.role ?? "")) && (
                     <div>
                         <CustomEditor
                             content="custom"
