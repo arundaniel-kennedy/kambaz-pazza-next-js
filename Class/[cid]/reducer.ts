@@ -34,7 +34,7 @@ const classSlice = createSlice({
     },
 
     addPost: (state, { payload: post }) => {
-      const newPost = { ...post, _id: uuidv4() };
+      const newPost = { ...post };
       state.posts = [...state.posts, newPost] as any;
     },
 

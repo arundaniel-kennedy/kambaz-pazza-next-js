@@ -4,14 +4,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter, useParams } from "next/navigation";
 import Editor from "react-simple-wysiwyg";
-import {
-    Form,
-    Button,
-    Badge,
-    Alert,
-    Row,
-    Col,
-} from "react-bootstrap";
+import { Form, Button, Badge, Alert, Row, Col } from "react-bootstrap";
 import { FaPlusCircle, FaTimes } from "react-icons/fa";
 import { IoArrowBackOutline } from "react-icons/io5";
 import type { storeType } from "../../../store";
@@ -29,7 +22,7 @@ import {
     clearFieldError,
     resetForm,
 } from "./reducer";
-import { addPost as addPostToClassReducer } from "../reducer";
+import { addPost as addPostToClassReducer, setPosts } from "../reducer";
 import { createPost } from "../client";
 import { getInstructorsForCourse } from "../client";
 import Link from "next/link";
@@ -41,7 +34,7 @@ export default function NewPostScreen() {
     const [instructors, setInstructors] = useState<
         Array<{ _id: string; firstName: string; lastName: string }>
     >([]);
-    
+
     const dispatch = useDispatch();
     const { cid } = useParams();
     const router = useRouter();
@@ -77,7 +70,6 @@ export default function NewPostScreen() {
             dispatch(clearFieldError("folders"));
         }
     };
-
 
     const handleSummaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -115,11 +107,11 @@ export default function NewPostScreen() {
         }
 
         const audience =
-    formData.postTo === "entire-class"
-        ? ["ALL"]
-        : formData.selectedUsers.length === 0
-            ? ["ALL"]
-            : [...formData.selectedUsers];
+            formData.postTo === "entire-class"
+                ? ["ALL"]
+                : formData.selectedUsers.length === 0
+                ? ["ALL"]
+                : [...formData.selectedUsers];
 
         const postData = {
             post_type: formData.postType.toUpperCase() as
@@ -138,8 +130,7 @@ export default function NewPostScreen() {
             course: Array.isArray(cid) ? cid[0] : cid,
             timestamp: new Date().toISOString(),
             read_by: [],
-            audience
-            
+            audience,
         };
 
         try {
@@ -162,8 +153,6 @@ export default function NewPostScreen() {
         if (formData.postType === "note") return "Post My Note";
         return "Post";
     };
-
-
 
     return (
         <div>
@@ -291,11 +280,15 @@ export default function NewPostScreen() {
                                 <div>
                                     <Form.Select
                                         onChange={(e) => {
-    if (e.target.value) {
-        dispatch(toggleSelectedUser(e.target.value));
-        e.target.value = "";
-    }
-}}
+                                            if (e.target.value) {
+                                                dispatch(
+                                                    toggleSelectedUser(
+                                                        e.target.value
+                                                    )
+                                                );
+                                                e.target.value = "";
+                                            }
+                                        }}
                                     >
                                         <option value="">
                                             Select an instructor...
@@ -311,24 +304,34 @@ export default function NewPostScreen() {
                                         ))}
                                     </Form.Select>
                                     <div className="mt-2 d-flex flex-wrap gap-2">
-                                        {formData.selectedUsers.map((audienceId) => {
-                                            const instructor = instructors.find(
-                                                (i) => i._id === audienceId
-                                            );
-                                            return (
-                                                <Badge
-                                                    key={audienceId}
-                                                    bg="info"
-                                                    className="d-flex align-items-center gap-2"
-                                                >
-                                                    {instructor?.firstName}{" "}
-                                                    {instructor?.lastName}
-                                                    <FaTimes
-                                                        onClick={() => dispatch(toggleSelectedUser(audienceId))}
-                                                    ></FaTimes>
-                                                </Badge>
-                                            );
-                                        })}
+                                        {formData.selectedUsers.map(
+                                            (audienceId) => {
+                                                const instructor =
+                                                    instructors.find(
+                                                        (i) =>
+                                                            i._id === audienceId
+                                                    );
+                                                return (
+                                                    <Badge
+                                                        key={audienceId}
+                                                        bg="info"
+                                                        className="d-flex align-items-center gap-2"
+                                                    >
+                                                        {instructor?.firstName}{" "}
+                                                        {instructor?.lastName}
+                                                        <FaTimes
+                                                            onClick={() =>
+                                                                dispatch(
+                                                                    toggleSelectedUser(
+                                                                        audienceId
+                                                                    )
+                                                                )
+                                                            }
+                                                        ></FaTimes>
+                                                    </Badge>
+                                                );
+                                            }
+                                        )}
                                     </div>
                                 </div>
                             )}
